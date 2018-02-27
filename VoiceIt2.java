@@ -133,12 +133,11 @@ public class VoiceIt2 {
 			}	
 	}
 
-	public String createFaceEnrollment(String userId, String contentLanguage, File video) {
+	public String createFaceEnrollment(String userId, File video) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
-		    .addTextBody("contentLanguage", contentLanguage)
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face");
@@ -151,12 +150,11 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String createFaceEnrollment(String userId, String contentLanguage, File video, boolean doBlinkDetection) {
+	public String createFaceEnrollment(String userId, File video, boolean doBlinkDetection) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
-		    .addTextBody("contentLanguage", contentLanguage)
 		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
