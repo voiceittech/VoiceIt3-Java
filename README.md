@@ -1,6 +1,6 @@
-# VoiceIt2-Java
+## VoiceIt's API 2.0 Java Wrapper
 
-A Java wrapper for VoiceIt's new API2.0 featuring Voice + Face Verification and Identification.
+A Java wrapper for VoiceIt's API2.0 featuring Face + Voice Verification and Identification.
 
 * [Getting Started](#getting-started)
 * [Installation](#installation)
@@ -9,7 +9,7 @@ A Java wrapper for VoiceIt's new API2.0 featuring Voice + Face Verification and 
   * [User API Calls](#user-api-calls)
       * [Get All Users](#get-all-users)
       * [Create User](#create-user)
-      * [Get User](#check-if-user-exists)
+      * [Check User Exists](#check-user-exists)
       * [Get Groups for User](#get-groups-for-user)
       * [Delete User](#delete-user)
   * [Group API Calls](#group-api-calls)
@@ -17,38 +17,71 @@ A Java wrapper for VoiceIt's new API2.0 featuring Voice + Face Verification and 
       * [Create Group](#create-group)
       * [Get Group](#get-group)
       * [Delete Group](#delete-group)
-      * [Group exists](#check-if-group-exists)
+      * [Check Group Exists](#check-group-exists)
       * [Add User to Group](#add-user-to-group)
       * [Remove User from Group](#remove-user-from-group)      
   * [Enrollment API Calls](#enrollment-api-calls)
       * [Get All Enrollments for User](#get-all-enrollments-for-user)
+      * [Get Face Enrollments for User](#get-face-enrollments-for-user)
+      * [Delete All Enrollments for User](#delete-all-enrollments-for-user)
       * [Delete Enrollment for User](#delete-enrollment-for-user)
-      * [Create Audio Enrollment](#create-voice-enrollment)
+      * [Delete Face Enrollment](#delete-face-enrollment)
+      * [Create Voice Enrollment](#create-voice-enrollment)
+      * [Create Voice Enrollment By URL](#create-voice-enrollment-by-url)
       * [Create Video Enrollment](#create-video-enrollment)
+      * [Create Video Enrollment By URL](#create-video-enrollment-by-url)
+      * [Create Face Enrollment](#create-face-enrollment)
   * [Verification API Calls](#verification-api-calls)
-      * [Audio Verification](#voice-verification)
+      * [Voice Verification](#voice-verification)
+      * [Voice Verification By URL](#voice-verification-by-url)
       * [Video Verification](#video-verification)
+      * [Video Verification By URL](#video-verification-by-url)
+      * [Face Verification](#face-verification)
   * [Identification API Calls](#identification-api-calls)
-      * [Audio Identification](#voice-identification)
+      * [Voice Identification](#voice-identification)
+      * [Voice Identification By URL](#voice-identification-by-url)
       * [Video Identification](#video-identification)
+      * [Video Identification By URL](#video-identification-by-url)
 
 ## Getting Started
 
-Sign up for a free Developer Account at <a href="https://voiceit.io/signup" target="_blank">VoiceIt.io</a> and activate API 2.0 from the settings page. Then you should be able view the API Key and Token. You can also review the HTTP Documentation at <a href="https://api.voiceit.io" target="_blank">api.voiceit.io</a>.
+Sign up for a free Developer Account at [voiceit.io](https://voiceit.io/signup) and activate API 2.0 from the settings page. Then you should be able view the API Key and Token. You can also review the HTTP Documentation at [api.voiceit.io](https://api.voiceit.io)
 
 ## Installation
-
-This wrapper uses the Apache Http Mime Dependency: https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime
-
-## API Calls
-
-### Initialization
-
-First initialize a reference with the API Credentials.
-
-```java
-VoiceIt2 myVoiceIt = new VoiceIt2("API_KEY", "API_TOK");
+We recommend using jitpack to grab the wrapper into your project. Add the following if you are using Maven for you project:
 ```
+  <repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+  </repositories>
+```
+```
+  <dependency>
+	    <groupId>com.github.USER</groupId>
+	    <artifactId>REPO_HERE</artifactId>
+	    <version>TAG_HERE</version>
+  </dependency>
+```
+For Gradle, we recommend you disable offline mode in case you are using Intellij. We also recommend using Java8. 
+Add the following to your gradle build file:
+
+```
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+  
+```
+dependencies {
+	        implementation 'com.github.USER:REPO_HERE:TAG_HERE'
+	}
+```
+
 
 ### API calls
 
