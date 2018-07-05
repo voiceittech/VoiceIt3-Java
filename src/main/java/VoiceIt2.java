@@ -45,7 +45,7 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String getUser(String userId) {
+	public String checkUserExists(String userId) {
 		try {		
 			return EntityUtils.toString(httpClient.execute(
 					new HttpGet(BASE_URL + "/users/" + userId)).getEntity());
