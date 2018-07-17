@@ -23,8 +23,12 @@ public class VoiceIt2 {
 	        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 	        credentialsProvider.setCredentials(AuthScope.ANY, 
 	            new UsernamePasswordCredentials(apiKey, apiToken));
-	         httpClient =  HttpClientBuilder.create()
-	        		 .setDefaultCredentialsProvider(credentialsProvider).build();
+		final List<Header> headers = new ArrayList<Header>();
+	        headers.add(new BasicHeader("platformId", "29"));
+	        httpClient =  HttpClientBuilder.create()
+	        		.setDefaultCredentialsProvider(credentialsProvider)
+	        		.setDefaultHeaders(headers)
+	        		.build();
 	}
 	
 	public String getAllUsers() {
