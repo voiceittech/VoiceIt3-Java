@@ -1,6 +1,9 @@
 package main.java;
 
 import java.io.File;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +40,7 @@ public class VoiceIt2 {
 	        		.build();
 	}
 	
-	public VoiceIt2(String apiKey, String apiToken, String customBaseURL){
+	public VoiceIt2(String apiKey, String apiToken, String customBaseURL) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(apiKey, apiToken));
         final List<Header> headers = new ArrayList<Header>();
