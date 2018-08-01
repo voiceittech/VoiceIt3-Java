@@ -26,7 +26,7 @@ import org.apache.http.util.EntityUtils;
 
 public class VoiceIt2 {
 	
-	private final String BASE_URL = "https://api.voiceit.io";
+	private String BASE_URL = "https://api.voiceit.io";
 	private HttpClient httpClient;
 	
 	public VoiceIt2(String apiKey, String apiToken){
@@ -41,6 +41,7 @@ public class VoiceIt2 {
 	}
 	
 	public VoiceIt2(String apiKey, String apiToken, String customBaseURL) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
+		this.BASE_URL = customBaseURL;
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(apiKey, apiToken));
         final List<Header> headers = new ArrayList<Header>();
