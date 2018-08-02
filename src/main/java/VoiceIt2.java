@@ -4,24 +4,27 @@ import java.io.File;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
-import org.apache.http.Header;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 
 public class VoiceIt2 {
@@ -30,30 +33,34 @@ public class VoiceIt2 {
 	private HttpClient httpClient;
 	
 	public VoiceIt2(String apiKey, String apiToken){
-	        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-	        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(apiKey, apiToken));
-	        final List<Header> headers = new ArrayList<Header>();
-	        headers.add(new BasicHeader("platformId", "29"));
-	        httpClient =  HttpClientBuilder.create()
-	        		.setDefaultCredentialsProvider(credentialsProvider)
-	        		.setDefaultHeaders(headers)
-	        		.build();
+			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+			setup(clientBuilder, apiKey, apiToken);
+			httpClient = clientBuilder.build();
 	}
 	
 	public VoiceIt2(String apiKey, String apiToken, String customBaseURL) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
-		this.BASE_URL = customBaseURL;
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(apiKey, apiToken));
-        final List<Header> headers = new ArrayList<Header>();
-        headers.add(new BasicHeader("platformId", "29"));
-        SSLContextBuilder sslBuilder = new SSLContextBuilder();
-        sslBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslBuilder.build());
-          httpClient =  HttpClientBuilder.create()
-              .setSSLSocketFactory(sslsf)
-              .setDefaultCredentialsProvider(credentialsProvider)
-              .setDefaultHeaders(headers)
-              .build();
+		// Setting custom host URL and SSL Context
+		BASE_URL = customBaseURL;
+    	SSLContext sslContext = SSLContext.getInstance("TLS");
+		sslContext.init(null, new X509TrustManager[] { new X509TrustManager() {
+		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
+		public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
+		public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0];}}}, new SecureRandom());
+		HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+			public boolean verify(String hostname, SSLSession session) { return true; }
+		};
+		HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+		clientBuilder.setSSLContext(sslContext).setSSLHostnameVerifier(hostnameVerifier);
+		setup(clientBuilder, apiKey, apiToken);
+		httpClient = clientBuilder.build();
+	}
+	
+	private void setup(HttpClientBuilder clientBuilder, String apiKey, String apiToken) {
+	      CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+	      credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(apiKey, apiToken));
+	      clientBuilder
+	      .setDefaultCredentialsProvider(credentialsProvider)
+	      .setDefaultHeaders(Arrays.asList(new BasicHeader("platformId", "29")));
 	}
 	
 	public String getAllUsers() {
