@@ -9,6 +9,11 @@ import main.java.VoiceIt2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestVoiceIt2 {
+	
+	private String apiKey = System.getenv("VIAPIKEY");
+	private String apiTok = System.getenv("VIAPITOKEN");
+	
+	private String phrase = "Never forget tomorrow is a new day";
 
   void downloadFile(String source, String destination) {
     try {
@@ -66,7 +71,7 @@ class TestVoiceIt2 {
 
   @Test
   void TestBasics() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(System.getenv("VIAPIKEY"), System.getenv("VIAPITOKEN"));
+	VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
     
     String ret = "";
     // Create User
@@ -136,7 +141,7 @@ class TestVoiceIt2 {
 
   @Test
   void TestVideo() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(System.getenv("VIAPIKEY"), System.getenv("VIAPITOKEN"));
+    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
     
     String ret = "";
     ret = myVoiceIt.createUser();
@@ -157,68 +162,72 @@ class TestVoiceIt2 {
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen2.mov", "./videoEnrollmentStephen2.mov");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen3.mov", "./videoEnrollmentStephen3.mov");
 
-    ret = myVoiceIt.createVideoEnrollment(userId1, "en-US", "./videoEnrollmentArmaan1.mov");
+    ret = myVoiceIt.createVideoEnrollment(userId1, "en-US", phrase, "./videoEnrollmentArmaan1.mov");
     int enrollmentId1 = getEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollment(userId1, "en-US", "./videoEnrollmentArmaan2.mov");
+    ret = myVoiceIt.createVideoEnrollment(userId1, "en-US", phrase, "./videoEnrollmentArmaan2.mov");
     int enrollmentId2 = getEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollment(userId1, "en-US", "./videoEnrollmentArmaan3.mov");
+    ret = myVoiceIt.createVideoEnrollment(userId1, "en-US", phrase, "./videoEnrollmentArmaan3.mov");
     int enrollmentId3 = getEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
+  
+	  ret = myVoiceIt.getAllVideoEnrollments(userId1);
+	  assertEquals(200, getStatus(ret));
+	  assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollment(userId2, "en-US", new File("./videoEnrollmentStephen1.mov"));
+    ret = myVoiceIt.createVideoEnrollment(userId2, "en-US", phrase, new File("./videoEnrollmentStephen1.mov"));
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollment(userId2, "en-US", new File("./videoEnrollmentStephen2.mov"));
+    ret = myVoiceIt.createVideoEnrollment(userId2, "en-US", phrase, new File("./videoEnrollmentStephen2.mov"));
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollment(userId2, "en-US", new File("./videoEnrollmentStephen3.mov"));
+    ret = myVoiceIt.createVideoEnrollment(userId2, "en-US", phrase, new File("./videoEnrollmentStephen3.mov"));
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     
     // Video Verification
-    ret = myVoiceIt.videoVerification(userId1, "en-US", "./videoVerificationArmaan1.mov");
+    ret = myVoiceIt.videoVerification(userId1, "en-US", phrase, "./videoVerificationArmaan1.mov");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.videoVerification(userId1, "en-US", new File("./videoVerificationArmaan1.mov"));
+    ret = myVoiceIt.videoVerification(userId1, "en-US", phrase, new File("./videoVerificationArmaan1.mov"));
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
     // Video Identification
-    ret = myVoiceIt.videoIdentification(groupId, "en-US", "./videoVerificationArmaan1.mov");
+    ret = myVoiceIt.videoIdentification(groupId, "en-US", phrase, "./videoVerificationArmaan1.mov");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
-    ret = myVoiceIt.videoIdentification(groupId, "en-US", new File("./videoVerificationArmaan1.mov"));
+    ret = myVoiceIt.videoIdentification(groupId, "en-US", phrase, new File("./videoVerificationArmaan1.mov"));
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
     // Delete Individual Video Enrollments
-    ret = myVoiceIt.deleteEnrollmentForUser(userId1, enrollmentId1);
+    ret = myVoiceIt.deleteVideoEnrollment(userId1, enrollmentId1);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.deleteEnrollmentForUser(userId1, enrollmentId2);
+    ret = myVoiceIt.deleteVideoEnrollment(userId1, enrollmentId2);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.deleteEnrollmentForUser(userId1, enrollmentId3);
+    ret = myVoiceIt.deleteVideoEnrollment(userId1, enrollmentId3);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
     // Delete All Enrollments
-    ret = myVoiceIt.deleteAllEnrollmentsForUser(userId2);
+    ret = myVoiceIt.deleteAllVideoEnrollments(userId2);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
@@ -237,44 +246,44 @@ class TestVoiceIt2 {
 
     // Video Enrollments By URL
     
-    ret = myVoiceIt.createVideoEnrollmentByUrl(userId1, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan1.mov");
+    ret = myVoiceIt.createVideoEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan1.mov");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollmentByUrl(userId1, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan2.mov");
+    ret = myVoiceIt.createVideoEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan2.mov");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollmentByUrl(userId1, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan3.mov");
+    ret = myVoiceIt.createVideoEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan3.mov");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollmentByUrl(userId2, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen1.mov");
+    ret = myVoiceIt.createVideoEnrollmentByUrl(userId2, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen1.mov");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollmentByUrl(userId2, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen2.mov");
+    ret = myVoiceIt.createVideoEnrollmentByUrl(userId2, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen2.mov");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVideoEnrollmentByUrl(userId2, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen3.mov");
+    ret = myVoiceIt.createVideoEnrollmentByUrl(userId2, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen3.mov");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
 
     // Video Verification By URL
-    ret = myVoiceIt.videoVerificationByUrl(userId1, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoVerificationArmaan1.mov");
+    ret = myVoiceIt.videoVerificationByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoVerificationArmaan1.mov");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
     // Video Identification By URL
-    ret = myVoiceIt.videoIdentificationByUrl(groupId, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoVerificationArmaan1.mov");
+    ret = myVoiceIt.videoIdentificationByUrl(groupId, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoVerificationArmaan1.mov");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
-    myVoiceIt.deleteAllEnrollmentsForUser(userId1);
-    myVoiceIt.deleteAllEnrollmentsForUser(userId2);
+    myVoiceIt.deleteAllVideoEnrollments(userId1);
+    myVoiceIt.deleteAllVideoEnrollments(userId2);
     myVoiceIt.deleteUser(userId1);
     myVoiceIt.deleteUser(userId2);
     myVoiceIt.deleteGroup(groupId);
@@ -292,7 +301,7 @@ class TestVoiceIt2 {
 
   @Test
   void TestVoice() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(System.getenv("VIAPIKEY"), System.getenv("VIAPITOKEN"));
+    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
     
     String ret = "";
     ret = myVoiceIt.createUser();
@@ -313,53 +322,57 @@ class TestVoiceIt2 {
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentStephen2.wav", "./enrollmentStephen2.wav");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentStephen3.wav", "./enrollmentStephen3.wav");
 
-    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", "./enrollmentArmaan1.wav");
+    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentArmaan1.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", "./enrollmentArmaan2.wav");
+    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentArmaan2.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", "./enrollmentArmaan3.wav");
+    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentArmaan3.wav");
+    assertEquals(201, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+  
+    ret = myVoiceIt.getAllVoiceEnrollments(userId1);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    ret = myVoiceIt.createVoiceEnrollment(userId2, "en-US", phrase, new File("./enrollmentStephen1.wav"));
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollment(userId2, "en-US", new File("./enrollmentStephen1.wav"));
+    ret = myVoiceIt.createVoiceEnrollment(userId2, "en-US", phrase, new File("./enrollmentStephen2.wav"));
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollment(userId2, "en-US", new File("./enrollmentStephen2.wav"));
-    assertEquals(201, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.createVoiceEnrollment(userId2, "en-US", new File("./enrollmentStephen3.wav"));
+    ret = myVoiceIt.createVoiceEnrollment(userId2, "en-US", phrase, new File("./enrollmentStephen3.wav"));
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     
     // Voice Verification
-    ret = myVoiceIt.voiceVerification(userId1, "en-US", "./verificationArmaan1.wav");
+    ret = myVoiceIt.voiceVerification(userId1, "en-US", phrase, "./verificationArmaan1.wav");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.voiceVerification(userId1, "en-US", new File("./verificationArmaan1.wav"));
+    ret = myVoiceIt.voiceVerification(userId1, "en-US", phrase, new File("./verificationArmaan1.wav"));
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
     // Voice Identification
-    ret = myVoiceIt.voiceIdentification(groupId, "en-US", "./verificationArmaan1.wav");
+    ret = myVoiceIt.voiceIdentification(groupId, "en-US", phrase, "./verificationArmaan1.wav");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
-    ret = myVoiceIt.voiceIdentification(groupId, "en-US", new File("./verificationArmaan1.wav"));
+    ret = myVoiceIt.voiceIdentification(groupId, "en-US", phrase, new File("./verificationArmaan1.wav"));
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
     // Reset for ...ByUrl operations
-    myVoiceIt.deleteAllEnrollmentsForUser(userId1);
-    myVoiceIt.deleteAllEnrollmentsForUser(userId2);
+    myVoiceIt.deleteAllVoiceEnrollments(userId1);
+    myVoiceIt.deleteAllVoiceEnrollments(userId2);
     myVoiceIt.deleteUser(userId1);
     myVoiceIt.deleteUser(userId2);
     myVoiceIt.deleteGroup(groupId);
@@ -373,43 +386,43 @@ class TestVoiceIt2 {
     myVoiceIt.addUserToGroup(groupId, userId2);
 
     // Create Voice Enrollments By URL
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentArmaan1.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentArmaan1.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentArmaan2.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentArmaan2.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentArmaan3.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentArmaan3.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId2, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentStephen1.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId2, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentStephen1.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId2, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentStephen2.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId2, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentStephen2.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId2, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentStephen3.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId2, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentStephen3.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     
     // Voice Verification
-    ret = myVoiceIt.voiceVerificationByUrl(userId1, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationArmaan1.wav");
+    ret = myVoiceIt.voiceVerificationByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationArmaan1.wav");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
     // Voice Identification
-    ret = myVoiceIt.voiceIdentificationByUrl(groupId, "en-US", "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationArmaan1.wav");
+    ret = myVoiceIt.voiceIdentificationByUrl(groupId, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationArmaan1.wav");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
-    myVoiceIt.deleteAllEnrollmentsForUser(userId1);
-    myVoiceIt.deleteAllEnrollmentsForUser(userId2);
+    myVoiceIt.deleteAllVoiceEnrollments(userId1);
+    myVoiceIt.deleteAllVoiceEnrollments(userId2);
     myVoiceIt.deleteUser(userId1);
     myVoiceIt.deleteUser(userId2);
     myVoiceIt.deleteGroup(groupId);
@@ -427,12 +440,17 @@ class TestVoiceIt2 {
 
   @Test
   void TestFace() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(System.getenv("VIAPIKEY"), System.getenv("VIAPITOKEN"));
+	VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
     
-    String ret = "";
-    ret = myVoiceIt.createUser();
-    String userId = getUserId(ret);
-    ret = myVoiceIt.createUser();
+	String ret = "";
+	ret = myVoiceIt.createUser();
+	String userId1 = getUserId(ret);
+	ret = myVoiceIt.createUser();
+	String userId2 = getUserId(ret);
+	ret = myVoiceIt.createGroup("Sample Group Description");
+	String groupId = getGroupId(ret);
+	myVoiceIt.addUserToGroup(groupId, userId1);
+	myVoiceIt.addUserToGroup(groupId, userId2);
 
     // Create Face Enrollments
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan1.mp4", "./faceEnrollmentArmaan1.mp4");
@@ -440,45 +458,119 @@ class TestVoiceIt2 {
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan3.mp4", "./faceEnrollmentArmaan3.mp4");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceVerificationArmaan1.mp4", "./faceVerificationArmaan1.mp4");
 
-
-    ret = myVoiceIt.createFaceEnrollment(userId, "./faceEnrollmentArmaan1.mp4");
+    ret = myVoiceIt.createFaceEnrollment(userId1, "./faceEnrollmentArmaan1.mp4");
     int faceEnrollmentId1 = getFaceEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createFaceEnrollment(userId, "./faceEnrollmentArmaan2.mp4");
+    ret = myVoiceIt.createFaceEnrollment(userId1, "./faceEnrollmentArmaan2.mp4");
     int faceEnrollmentId2 = getFaceEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createFaceEnrollment(userId, "./faceEnrollmentArmaan3.mp4");
+    ret = myVoiceIt.createFaceEnrollment(userId1, "./faceEnrollmentArmaan3.mp4");
     int faceEnrollmentId3 = getFaceEnrollmentId(ret);
+    assertEquals(201, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+    
+    ret = myVoiceIt.getAllFaceEnrollments(userId1);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    // Face Verification
+    ret = myVoiceIt.faceVerification(userId1, "./faceVerificationArmaan1.mp4");
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    ret = myVoiceIt.faceVerification(userId1, new File("./faceVerificationArmaan1.mp4"));
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+    
+    // Face Identification
+    ret = myVoiceIt.faceIdentification(groupId, "./faceVerificationArmaan1.mp4");
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+    assertEquals(groupId, getGroupId(ret));
+
+    // Delete Face Enrollments Individually
+    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId1);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId2);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId3);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+    
+    ret = myVoiceIt.deleteAllFaceEnrollments(userId2);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    myVoiceIt.deleteUser(userId1);
+    myVoiceIt.deleteUser(userId2);
+    myVoiceIt.deleteGroup(groupId);
+     
+    // By Url
+    
+    ret = "";
+	ret = myVoiceIt.createUser();
+	userId1 = getUserId(ret);
+	ret = myVoiceIt.createUser();
+	userId2 = getUserId(ret);
+	ret = myVoiceIt.createGroup("Sample Group Description");
+	groupId = getGroupId(ret);
+	myVoiceIt.addUserToGroup(groupId, userId1);
+	myVoiceIt.addUserToGroup(groupId, userId2);
+
+    ret = myVoiceIt.createFaceEnrollmentByUrl(userId1, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan1.mp4");
+    faceEnrollmentId1 = getFaceEnrollmentId(ret);
+    assertEquals(201, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    ret = myVoiceIt.createFaceEnrollmentByUrl(userId1, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan2.mp4");
+    faceEnrollmentId2 = getFaceEnrollmentId(ret);
+    assertEquals(201, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    ret = myVoiceIt.createFaceEnrollmentByUrl(userId1, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan3.mp4");
+    faceEnrollmentId3 = getFaceEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
     // Face Verification
-    ret = myVoiceIt.faceVerification(userId, "./faceVerificationArmaan1.mp4");
+    ret = myVoiceIt.faceVerificationByUrl(userId1, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceVerificationArmaan1.mp4");
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+    
+    // Face Identification
+    ret = myVoiceIt.faceIdentificationByUrl(groupId, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceVerificationArmaan1.mp4");
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+    assertEquals(groupId, getGroupId(ret));
+
+    // Delete Face Enrollments Individually
+    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId1);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.faceVerification(userId, new File("./faceVerificationArmaan1.mp4"));
+    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId2);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-   // Delete Face Enrollments Individually
-    ret = myVoiceIt.deleteFaceEnrollment(userId, faceEnrollmentId1);
+    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId3);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+    
+    ret = myVoiceIt.deleteAllFaceEnrollments(userId2);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.deleteFaceEnrollment(userId, faceEnrollmentId2);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteFaceEnrollment(userId, faceEnrollmentId3);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    myVoiceIt.deleteUser(userId);
+    myVoiceIt.deleteUser(userId1);
+    myVoiceIt.deleteUser(userId2);
+    myVoiceIt.deleteGroup(groupId);
 
     deleteFile("./faceEnrollmentArmaan1.mp4");
     deleteFile("./faceEnrollmentArmaan2.mp4");

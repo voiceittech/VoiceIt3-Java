@@ -63,6 +63,15 @@ public class VoiceIt2 {
 	      .setDefaultHeaders(Arrays.asList(new BasicHeader("platformId", "29")));
 	}
 	
+	public String getPhrases() {
+		try {		
+			return EntityUtils.toString(httpClient.execute(
+					new HttpGet(BASE_URL + "/phrases")).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
 	public String getAllUsers() {
 		try {		
 			return EntityUtils.toString(httpClient.execute(
@@ -108,16 +117,7 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String getAllEnrollmentsForUser(String userId) {
-		try {		
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/" + userId)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}		
-	}
-	
-	public String deleteAllEnrollmentsForUser(String userId) {
+	public String deleteAllEnrollments(String userId) {
 		try {		
 			return EntityUtils.toString(httpClient.execute(
 					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/all")).getEntity());
@@ -126,7 +126,16 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String getFaceFaceEnrollmentsForUser(String userId) {
+	public String getAllVoiceEnrollments(String userId) {
+		try {		
+			return EntityUtils.toString(httpClient.execute(
+					new HttpGet(BASE_URL + "/enrollments/voice/" + userId)).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String getAllFaceEnrollments(String userId) {
 		try {		
 			return EntityUtils.toString(httpClient.execute(
 					new HttpGet(BASE_URL + "/enrollments/face/" + userId)).getEntity());
@@ -135,19 +144,29 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String createVoiceEnrollment(String userId, String contentLanguage, String recordingPath) {
-    return createVoiceEnrollment(userId, contentLanguage, new File(recordingPath));
+	public String getAllVideoEnrollments(String userId) {
+		try {		
+			return EntityUtils.toString(httpClient.execute(
+					new HttpGet(BASE_URL + "/enrollments/video/" + userId)).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String createVoiceEnrollment(String userId, String contentLanguage, String phrase, String recordingPath) {
+    return createVoiceEnrollment(userId, contentLanguage, phrase, new File(recordingPath));
   }
 
-	public String createVoiceEnrollment(String userId, String contentLanguage, File recording) {
+	public String createVoiceEnrollment(String userId, String contentLanguage, String phrase, File recording) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice");
 		httpPost.setEntity(entity);
 
 		try {		
@@ -157,15 +176,16 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String createVoiceEnrollmentByUrl(String userId, String contentLanguage, String fileUrl) {
+	public String createVoiceEnrollmentByUrl(String userId, String contentLanguage, String phrase, String fileUrl) {
 			
 			HttpEntity entity = MultipartEntityBuilder
 			    .create()
 			    .addTextBody("userId", userId)
 			    .addTextBody("contentLanguage", contentLanguage)
+			    .addTextBody("phrase", phrase)
 			    .addTextBody("fileUrl", fileUrl)
 			    .build();
-			HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/byUrl");
+			HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice/byUrl");
 			httpPost.setEntity(entity);
 			
 			try {		
@@ -204,25 +224,48 @@ public class VoiceIt2 {
 			return e.getMessage();
 		}		
 	}
-
-	public String createVideoEnrollment(String userId, String contentLanguage, File video) {
-    return createVideoEnrollment(userId, contentLanguage, video, false);
-	}
-
-	public String createVideoEnrollment(String userId, String contentLanguage, String videoPath) {
-    return createVideoEnrollment(userId, contentLanguage, new File(videoPath), false);
-	}
-
-	public String createVideoEnrollment(String userId, String contentLanguage, String videoPath, boolean doBlinkDetection) {
-    return createVideoEnrollment(userId, contentLanguage, new File(videoPath), doBlinkDetection);
+	
+	public String createFaceEnrollmentByUrl(String userId, String fileUrl) {
+		return createFaceEnrollmentByUrl(userId, fileUrl, false);
 	}
 	
-	public String createVideoEnrollment(String userId, String contentLanguage, File video, boolean doBlinkDetection) {
+	public String createFaceEnrollmentByUrl(String userId, String fileUrl, boolean doBlinkDetection) {
+		
+		HttpEntity entity = MultipartEntityBuilder
+		    .create()
+		    .addTextBody("userId", userId)
+		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
+		    .addTextBody("fileUrl", fileUrl)
+		    .build();
+		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face/byUrl");
+		httpPost.setEntity(entity);
+	
+		try {	
+			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+
+	public String createVideoEnrollment(String userId, String contentLanguage, String phrase, File video) {
+    return createVideoEnrollment(userId, contentLanguage, phrase, video, false);
+	}
+
+	public String createVideoEnrollment(String userId, String contentLanguage, String phrase, String videoPath) {
+    return createVideoEnrollment(userId, contentLanguage, phrase, new File(videoPath), false);
+	}
+
+	public String createVideoEnrollment(String userId, String contentLanguage, String phrase, String videoPath, boolean doBlinkDetection) {
+    return createVideoEnrollment(userId, contentLanguage, phrase, new File(videoPath), doBlinkDetection);
+	}
+	
+	public String createVideoEnrollment(String userId, String contentLanguage, String phrase, File video, boolean doBlinkDetection) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
@@ -236,16 +279,17 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String createVideoEnrollmentByUrl(String userId, String contentLanguage, String fileUrl) {
-    return createVideoEnrollmentByUrl(userId, contentLanguage, fileUrl, false);
+	public String createVideoEnrollmentByUrl(String userId, String contentLanguage, String phrase, String fileUrl) {
+    return createVideoEnrollmentByUrl(userId, contentLanguage, phrase, fileUrl, false);
 	}
 	
-	public String createVideoEnrollmentByUrl(String userId, String contentLanguage, String fileUrl, boolean doBlinkDetection) {
+	public String createVideoEnrollmentByUrl(String userId, String contentLanguage, String phrase, String fileUrl, boolean doBlinkDetection) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
@@ -254,6 +298,15 @@ public class VoiceIt2 {
 	
 		try {		
 			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String deleteVoiceEnrollment(String userId, int enrollmentId) {
+		try {		
+			return EntityUtils.toString(httpClient.execute(
+					new HttpDelete(BASE_URL + "/enrollments/voice/" + userId + "/" + Integer.toString(enrollmentId))).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}		
@@ -268,10 +321,37 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String deleteEnrollmentForUser(String userId, int enrollmentId) {
+	public String deleteVideoEnrollment(String userId, int enrollmentId) {
 		try {		
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/" + Integer.toString(enrollmentId))).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/video/" + userId + "/" + Integer.toString(enrollmentId))).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String deleteAllVoiceEnrollments(String userId) {
+		try {		
+			return EntityUtils.toString(httpClient.execute(
+					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/voice")).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String deleteAllFaceEnrollments(String userId) {
+		try {		
+			return EntityUtils.toString(httpClient.execute(
+					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/face")).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String deleteAllVideoEnrollments(String userId) {
+		try {		
+			return EntityUtils.toString(httpClient.execute(
+					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/video")).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}		
@@ -363,19 +443,20 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String voiceVerification(String userId, String contentLanguage, String recordingPath) {
-    return voiceVerification(userId, contentLanguage, new File(recordingPath));
+	public String voiceVerification(String userId, String contentLanguage, String phrase, String recordingPath) {
+    return voiceVerification(userId, contentLanguage, phrase, new File(recordingPath));
   }
 
-	public String voiceVerification(String userId, String contentLanguage, File recording) {
+	public String voiceVerification(String userId, String contentLanguage, String phrase, File recording) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice");
 		httpPost.setEntity(entity);
 	
 		try {		
@@ -385,15 +466,16 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String voiceVerificationByUrl(String userId, String contentLanguage, String fileUrl) {
+	public String voiceVerificationByUrl(String userId, String contentLanguage, String phrase, String fileUrl) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice/byUrl");
 		httpPost.setEntity(entity);
 	
 		try {		
@@ -404,15 +486,15 @@ public class VoiceIt2 {
 	}
 	
 	public String faceVerification(String userId, File video) {
-    return faceVerification(userId, video, false);
+		return faceVerification(userId, video, false);
 	}
 
 	public String faceVerification(String userId, String videoPath) {
-    return faceVerification(userId, new File(videoPath), false);
+		return faceVerification(userId, new File(videoPath), false);
 	}
 
 	public String faceVerification(String userId, String videoPath, boolean doBlinkDetection) {
-    return faceVerification(userId, new File(videoPath), doBlinkDetection);
+		return faceVerification(userId, new File(videoPath), doBlinkDetection);
 	}
 	
 	public String faceVerification(String userId, File video, boolean doBlinkDetection) {
@@ -433,24 +515,99 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String videoVerification(String userId, String contentLanguage, File video) {
-    return videoVerification(userId, contentLanguage, video, false);
+	public String faceVerificationByUrl(String userId, String fileUrl) {
+		return faceVerificationByUrl(userId, fileUrl, false);
+	}
+	
+	public String faceVerificationByUrl(String userId, String fileUrl, boolean doBlinkDetection) {
+		
+		HttpEntity entity = MultipartEntityBuilder
+		    .create()
+		    .addTextBody("userId", userId)
+		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
+		    .addTextBody("fileUrl", fileUrl)
+		    .build();
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face/byUrl");
+		httpPost.setEntity(entity);
+	
+		try {		
+			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String faceIdentification(String groupId, File video) {
+	    return faceIdentification(groupId, video, false);
 	}
 
-  public String videoVerification(String userId, String contentLanguage, String videoPath) {
-    return videoVerification(userId, contentLanguage, new File(videoPath), false);
+	public String faceIdentification(String groupId, String videoPath) {
+		return faceIdentification(groupId, new File(videoPath), false);
+	}
+
+	public String faceIdentification(String groupId, String videoPath, boolean doBlinkDetection) {
+		return faceIdentification(groupId, new File(videoPath), doBlinkDetection);
+	}
+	
+	public String faceIdentification(String groupId, File video, boolean doBlinkDetection) {
+		
+		HttpEntity entity = MultipartEntityBuilder
+		    .create()
+		    .addTextBody("groupId", groupId)
+		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
+		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
+		    .build();
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face");
+		httpPost.setEntity(entity);
+	
+		try {		
+			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String faceIdentificationByUrl(String groupId, String fileUrl) {
+		return faceIdentificationByUrl(groupId, fileUrl, false);
+	}
+	
+	public String faceIdentificationByUrl(String groupId, String fileUrl, boolean doBlinkDetection) {
+		
+		HttpEntity entity = MultipartEntityBuilder
+		    .create()
+		    .addTextBody("groupId", groupId)
+		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
+		    .addTextBody("fileUrl", fileUrl)
+		    .build();
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face/byUrl");
+		httpPost.setEntity(entity);
+	
+		try {		
+			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}		
+	}
+	
+	public String videoVerification(String userId, String contentLanguage, String phrase, File video) {
+    return videoVerification(userId, contentLanguage, phrase, video, false);
+	}
+
+  public String videoVerification(String userId, String contentLanguage, String phrase, String videoPath) {
+    return videoVerification(userId, contentLanguage, phrase, new File(videoPath), false);
   }
 
-  public String videoVerification(String userId, String contentLanguage, String videoPath, boolean doBlinkDetection) {
-    return videoVerification(userId, contentLanguage, new File(videoPath), doBlinkDetection);
+  public String videoVerification(String userId, String contentLanguage, String phrase, String videoPath, boolean doBlinkDetection) {
+    return videoVerification(userId, contentLanguage, phrase, new File(videoPath), doBlinkDetection);
   }
 	
-	public String videoVerification(String userId, String contentLanguage, File video, boolean doBlinkDetection) {
+	public String videoVerification(String userId, String contentLanguage, String phrase, File video, boolean doBlinkDetection) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
@@ -464,16 +621,17 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String videoVerificationByUrl(String userId, String contentLanguage, String fileUrl) {
-    return videoVerificationByUrl(userId, contentLanguage, fileUrl, false);
+	public String videoVerificationByUrl(String userId, String contentLanguage, String phrase, String fileUrl) {
+    return videoVerificationByUrl(userId, contentLanguage, phrase, fileUrl, false);
 	}
 
-	public String videoVerificationByUrl(String userId, String contentLanguage, String fileUrl, boolean doBlinkDetection) {
+	public String videoVerificationByUrl(String userId, String contentLanguage, String phrase, String fileUrl, boolean doBlinkDetection) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
@@ -487,19 +645,20 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String voiceIdentification(String groupId, String contentLanguage, String recordingPath) {
-    return voiceIdentification(groupId, contentLanguage, new File(recordingPath));
+	public String voiceIdentification(String groupId, String contentLanguage, String phrase, String recordingPath) {
+    return voiceIdentification(groupId, contentLanguage, phrase, new File(recordingPath));
   }
 
-	public String voiceIdentification(String groupId, String contentLanguage, File recording) {
+	public String voiceIdentification(String groupId, String contentLanguage, String phrase, File recording) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice");
 		httpPost.setEntity(entity);
 	
 		try {		
@@ -509,15 +668,16 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String voiceIdentificationByUrl(String groupId, String contentLanguage, String fileUrl) {
+	public String voiceIdentificationByUrl(String groupId, String contentLanguage, String phrase, String fileUrl) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice/byUrl");
 		httpPost.setEntity(entity);
 	
 		try {		
@@ -527,24 +687,25 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String videoIdentification(String groupId, String contentLanguage, File video) {
-    return videoIdentification(groupId, contentLanguage, video, false);
+	public String videoIdentification(String groupId, String contentLanguage, String phrase, File video) {
+    return videoIdentification(groupId, contentLanguage, phrase, video, false);
 	}
 
-	public String videoIdentification(String groupId, String contentLanguage, String videoPath) {
-    return videoIdentification(groupId, contentLanguage, new File(videoPath), false);
+	public String videoIdentification(String groupId, String contentLanguage, String phrase, String videoPath) {
+    return videoIdentification(groupId, contentLanguage, phrase, new File(videoPath), false);
 	}
 
-	public String videoIdentification(String groupId, String contentLanguage, String videoPath, boolean doBlinkDetection) {
-    return videoIdentification(groupId, contentLanguage, new File(videoPath), doBlinkDetection);
+	public String videoIdentification(String groupId, String contentLanguage, String phrase, String videoPath, boolean doBlinkDetection) {
+    return videoIdentification(groupId, contentLanguage, phrase, new File(videoPath), doBlinkDetection);
 	}
 	
-	public String videoIdentification(String groupId, String contentLanguage, File video , boolean doBlinkDetection) {
+	public String videoIdentification(String groupId, String contentLanguage, String phrase, File video , boolean doBlinkDetection) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
@@ -558,16 +719,17 @@ public class VoiceIt2 {
 		}		
 	}
 	
-	public String videoIdentificationByUrl(String groupId, String contentLanguage, String fileUrl) {
-    return videoIdentificationByUrl(groupId, contentLanguage, fileUrl, false);
+	public String videoIdentificationByUrl(String groupId, String contentLanguage, String phrase, String fileUrl) {
+    return videoIdentificationByUrl(groupId, contentLanguage, phrase, fileUrl, false);
 	}
 
-	public String videoIdentificationByUrl(String groupId, String contentLanguage, String fileUrl, boolean doBlinkDetection) {
+	public String videoIdentificationByUrl(String groupId, String contentLanguage, String phrase, String fileUrl, boolean doBlinkDetection) {
 		
 		HttpEntity entity = MultipartEntityBuilder
 		    .create()
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("contentLanguage", contentLanguage)
+		    .addTextBody("phrase", phrase)
 		    .addTextBody("doBlinkDetection", String.valueOf(doBlinkDetection))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
