@@ -76,7 +76,7 @@ class TestVoiceIt2 {
     String ret = "";
 
 		// Get All Phrases
-		ret = myVoiceIt.getAllPhrases("en-US");
+		ret = myVoiceIt.getPhrases("en-US");
 		assertEquals(200, getStatus(ret));
 		assertEquals("SUCC", getResponseCode(ret));
 
