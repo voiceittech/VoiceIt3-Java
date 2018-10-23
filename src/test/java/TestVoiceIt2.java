@@ -302,6 +302,9 @@ class TestVoiceIt2 {
     deleteFile("./videoEnrollmentArmaan1.mov");
     deleteFile("./videoEnrollmentArmaan2.mov");
     deleteFile("./videoEnrollmentArmaan3.mov");
+    deleteFile("./videoEnrollmentStephen1.mov");
+    deleteFile("./videoEnrollmentStephen2.mov");
+    deleteFile("./videoEnrollmentStephen3.mov");
     deleteFile("./videoVerificationArmaan1.mov");
 
   }
@@ -464,6 +467,9 @@ class TestVoiceIt2 {
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan1.mp4", "./faceEnrollmentArmaan1.mp4");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan2.mp4", "./faceEnrollmentArmaan2.mp4");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan3.mp4", "./faceEnrollmentArmaan3.mp4");
+    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen1.mov", "./videoEnrollmentStephen1.mov");
+    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen2.mov", "./videoEnrollmentStephen2.mov");
+    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen3.mov", "./videoEnrollmentStephen3.mov");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceVerificationArmaan1.mp4", "./faceVerificationArmaan1.mp4");
 
     ret = myVoiceIt.createFaceEnrollment(userId1, "./faceEnrollmentArmaan1.mp4");
