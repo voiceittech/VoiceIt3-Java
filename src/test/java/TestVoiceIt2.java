@@ -485,6 +485,7 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
 
     ret = myVoiceIt.createFaceEnrollment(userId2, "./videoEnrollmentArmaan1.mov");
+    System.out.println(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
@@ -511,7 +512,6 @@ class TestVoiceIt2 {
 
     // Face Identification
     ret = myVoiceIt.faceIdentification(groupId, "./faceVerificationArmaan1.mp4");
-    System.out.println(ret);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(groupId, getGroupId(ret));
