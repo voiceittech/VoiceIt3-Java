@@ -305,7 +305,7 @@ class TestVoiceIt2 {
     deleteFile("./videoEnrollmentStephen1video.mov");
     deleteFile("./videoEnrollmentStephen2video.mov");
     deleteFile("./videoEnrollmentStephen3video.mov");
-    deleteFile("./videoVerificationArmaan1video.mov");
+    deleteFile("./videoVerificationArmaan1.mov");
 
   }
 
