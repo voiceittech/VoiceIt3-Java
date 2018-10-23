@@ -303,9 +303,6 @@ class TestVoiceIt2 {
     deleteFile("./videoEnrollmentArmaan2.mov");
     deleteFile("./videoEnrollmentArmaan3.mov");
     deleteFile("./videoVerificationArmaan1.mov");
-    deleteFile("./videoEnrollmentStephen1.mov");
-    deleteFile("./videoEnrollmentStephen2.mov");
-    deleteFile("./videoEnrollmentStephen3.mov");
 
   }
 
@@ -485,7 +482,6 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
 
     ret = myVoiceIt.createFaceEnrollment(userId2, "./videoEnrollmentStephen1.mov");
-    System.out.println(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
@@ -574,7 +570,6 @@ class TestVoiceIt2 {
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-
     ret = myVoiceIt.createFaceEnrollmentByUrl(userId2, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen3.mov");
     faceEnrollmentId3 = getFaceEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
@@ -615,6 +610,9 @@ class TestVoiceIt2 {
     deleteFile("./faceEnrollmentArmaan1.mp4");
     deleteFile("./faceEnrollmentArmaan2.mp4");
     deleteFile("./faceEnrollmentArmaan3.mp4");
+    deleteFile("./videoEnrollmentStephen1.mov");
+    deleteFile("./videoEnrollmentStephen2.mov");
+    deleteFile("./videoEnrollmentStephen3.mov");
     deleteFile("./faceVerificationArmaan1.mp4");
 
   }
