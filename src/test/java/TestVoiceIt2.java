@@ -484,16 +484,16 @@ class TestVoiceIt2 {
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createFaceEnrollment(userId2, "./videoEnrollmentArmaan1.mov");
+    ret = myVoiceIt.createFaceEnrollment(userId2, "./videoEnrollmentStephen1.mov");
     System.out.println(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createFaceEnrollment(userId2, "./videoEnrollmentArmaan2.mov");
+    ret = myVoiceIt.createFaceEnrollment(userId2, "./videoEnrollmentStephen2.mov");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createFaceEnrollment(userId2, "./videoEnrollmentArmaan3.mov");
+    ret = myVoiceIt.createFaceEnrollment(userId2, "./videoEnrollmentStephen3.mov");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
@@ -564,17 +564,17 @@ class TestVoiceIt2 {
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createFaceEnrollmentByUrl(userId2, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan1.mov");
+    ret = myVoiceIt.createFaceEnrollmentByUrl(userId2, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen1.mov");
     faceEnrollmentId1 = getFaceEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createFaceEnrollmentByUrl(userId2, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan2.mov");
+    ret = myVoiceIt.createFaceEnrollmentByUrl(userId2, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen2.mov");
     faceEnrollmentId2 = getFaceEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createFaceEnrollmentByUrl(userId2, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentArmaan3.mov");
+    ret = myVoiceIt.createFaceEnrollmentByUrl(userId2, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/videoEnrollmentStephen3.mov");
     faceEnrollmentId3 = getFaceEnrollmentId(ret);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
