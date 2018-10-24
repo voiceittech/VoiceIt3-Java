@@ -20,3 +20,5 @@ Contact us with any questions at support@voiceit.io
 VoiceIt2-Java is available under the MIT license. See the LICENSE file for more info.
 
   
+
+  
