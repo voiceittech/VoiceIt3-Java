@@ -1,6 +1,7 @@
 package main.java;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -240,7 +241,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice");
@@ -259,7 +260,7 @@ public class VoiceIt2 {
 			    .create()
 			    .addTextBody("userId", userId)
 			    .addTextBody("contentLanguage", contentLanguage)
-			    .addTextBody("phrase", phrase)
+			    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 			    .addTextBody("fileUrl", fileUrl)
 			    .build();
 			HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice/byUrl");
@@ -320,7 +321,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video");
@@ -339,7 +340,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video/byUrl");
@@ -425,7 +426,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice");
@@ -444,7 +445,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice/byUrl");
@@ -505,7 +506,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video");
@@ -524,7 +525,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("userId", userId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video/byUrl");
@@ -547,7 +548,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice");
@@ -566,7 +567,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice/byUrl");
@@ -627,7 +628,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video");
@@ -646,7 +647,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("contentLanguage", contentLanguage)
-		    .addTextBody("phrase", phrase)
+		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video/byUrl");
