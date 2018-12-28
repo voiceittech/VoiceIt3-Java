@@ -1,6 +1,8 @@
 package main.java;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -31,6 +33,7 @@ import org.apache.http.util.EntityUtils;
 public class VoiceIt2 {
 
 	private String BASE_URL = "https://api.voiceit.io";
+	private String notificationUrl = "";
 	private HttpClient httpClient;
 
 	public VoiceIt2(String apiKey, String apiToken){
@@ -64,10 +67,22 @@ public class VoiceIt2 {
 	      .setDefaultHeaders(Arrays.asList(new BasicHeader("platformId", "29")));
 	}
 
+  public String getNotificationUrl(){
+    return notificationUrl;
+  }
+
+	public void addNotificationUrl(String url) throws UnsupportedEncodingException{
+    notificationUrl = "?notificationURL=" + URLEncoder.encode(url, "UTF-8");
+  }
+
+	public void removeNotificationUrl() {
+    notificationUrl = "";
+  }
+
 	public String getPhrases(String contentLanguage) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/phrases/" + contentLanguage)).getEntity());
+					new HttpGet(BASE_URL + "/phrases/" + contentLanguage + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -76,7 +91,7 @@ public class VoiceIt2 {
 	public String getAllUsers() {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/users")).getEntity());
+					new HttpGet(BASE_URL + "/users" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -85,7 +100,7 @@ public class VoiceIt2 {
 	public String createUser() {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/users")).getEntity());
+					new HttpPost(BASE_URL + "/users" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -94,7 +109,7 @@ public class VoiceIt2 {
 	public String checkUserExists(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/users/" + userId)).getEntity());
+					new HttpGet(BASE_URL + "/users/" + userId + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -103,7 +118,7 @@ public class VoiceIt2 {
 	public String deleteUser(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/users/" + userId)).getEntity());
+					new HttpDelete(BASE_URL + "/users/" + userId + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -112,7 +127,7 @@ public class VoiceIt2 {
 	public String getGroupsForUser(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/users/" + userId + "/groups")).getEntity());
+					new HttpGet(BASE_URL + "/users/" + userId + "/groups" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -121,7 +136,7 @@ public class VoiceIt2 {
 	public String getAllGroups() {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/groups")).getEntity());
+					new HttpGet(BASE_URL + "/groups" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -130,7 +145,7 @@ public class VoiceIt2 {
 	public String getGroup(String groupId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/groups/" + groupId)).getEntity());
+					new HttpGet(BASE_URL + "/groups/" + groupId + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -139,7 +154,7 @@ public class VoiceIt2 {
 	public String groupExists(String groupId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/groups/" + groupId + "/exists")).getEntity());
+					new HttpGet(BASE_URL + "/groups/" + groupId + "/exists" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -151,7 +166,7 @@ public class VoiceIt2 {
 		    .create()
 		    .addTextBody("description", description)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/groups");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/groups" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -168,7 +183,7 @@ public class VoiceIt2 {
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("userId", userId)
 		    .build();
-		HttpPut httpPut = new HttpPut(BASE_URL + "/groups/addUser");
+		HttpPut httpPut = new HttpPut(BASE_URL + "/groups/addUser" + notificationUrl);
 		httpPut.setEntity(entity);
 
 		try {
@@ -185,7 +200,7 @@ public class VoiceIt2 {
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("userId", userId)
 		    .build();
-		HttpPut httpPut = new HttpPut(BASE_URL + "/groups/removeUser");
+		HttpPut httpPut = new HttpPut(BASE_URL + "/groups/removeUser" + notificationUrl);
 		httpPut.setEntity(entity);
 
 		try {
@@ -198,7 +213,7 @@ public class VoiceIt2 {
 	public String deleteGroup(String groupId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/groups/" + groupId)).getEntity());
+					new HttpDelete(BASE_URL + "/groups/" + groupId + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -207,7 +222,7 @@ public class VoiceIt2 {
 	public String getAllVoiceEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/voice/" + userId)).getEntity());
+					new HttpGet(BASE_URL + "/enrollments/voice/" + userId + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -216,7 +231,7 @@ public class VoiceIt2 {
 	public String getAllFaceEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/face/" + userId)).getEntity());
+					new HttpGet(BASE_URL + "/enrollments/face/" + userId + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -225,7 +240,7 @@ public class VoiceIt2 {
 	public String getAllVideoEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/video/" + userId)).getEntity());
+					new HttpGet(BASE_URL + "/enrollments/video/" + userId + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -244,7 +259,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -263,7 +278,7 @@ public class VoiceIt2 {
 			    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 			    .addTextBody("fileUrl", fileUrl)
 			    .build();
-			HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice/byUrl");
+			HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice/byUrl" + notificationUrl);
 			httpPost.setEntity(entity);
 
 			try {
@@ -284,7 +299,7 @@ public class VoiceIt2 {
 		    .addTextBody("userId", userId)
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -301,7 +316,7 @@ public class VoiceIt2 {
 		    .addTextBody("userId", userId)
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -324,7 +339,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -343,7 +358,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -356,7 +371,7 @@ public class VoiceIt2 {
 	public String deleteVoiceEnrollment(String userId, int enrollmentId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/voice/" + userId + "/" + Integer.toString(enrollmentId))).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/voice/" + userId + "/" + Integer.toString(enrollmentId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -365,7 +380,7 @@ public class VoiceIt2 {
 	public String deleteFaceEnrollment(String userId, int faceEnrollmentId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/face/" + userId + "/" + Integer.toString(faceEnrollmentId))).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/face/" + userId + "/" + Integer.toString(faceEnrollmentId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -374,7 +389,7 @@ public class VoiceIt2 {
 	public String deleteVideoEnrollment(String userId, int enrollmentId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/video/" + userId + "/" + Integer.toString(enrollmentId))).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/video/" + userId + "/" + Integer.toString(enrollmentId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -383,7 +398,7 @@ public class VoiceIt2 {
 	public String deleteAllVoiceEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/voice")).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/voice" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -392,7 +407,7 @@ public class VoiceIt2 {
 	public String deleteAllFaceEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/face")).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/face" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -401,7 +416,7 @@ public class VoiceIt2 {
 	public String deleteAllVideoEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/video")).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/video" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -410,7 +425,7 @@ public class VoiceIt2 {
 	public String deleteAllEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/all")).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/all" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -429,7 +444,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -448,7 +463,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -469,7 +484,7 @@ public class VoiceIt2 {
 		    .addTextBody("userId", userId)
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -486,7 +501,7 @@ public class VoiceIt2 {
 		    .addTextBody("userId", userId)
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -509,7 +524,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -528,7 +543,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -551,7 +566,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -570,7 +585,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -591,7 +606,7 @@ public class VoiceIt2 {
 				.addTextBody("groupId", groupId)
 				.addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 				.build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -608,7 +623,7 @@ public class VoiceIt2 {
 				.addTextBody("groupId", groupId)
 				.addTextBody("fileUrl", fileUrl)
 				.build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -631,7 +646,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -650,7 +665,7 @@ public class VoiceIt2 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video/byUrl");
+		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		try {
@@ -664,7 +679,7 @@ public class VoiceIt2 {
 	public String createUserToken(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/users/" + userId + "/token")).getEntity());
+					new HttpPost(BASE_URL + "/users/" + userId + "/token" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}

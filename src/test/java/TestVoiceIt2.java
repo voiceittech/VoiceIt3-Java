@@ -70,8 +70,21 @@ class TestVoiceIt2 {
 
 
   @Test
+  void TestWebhook() {
+    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    try {
+      myVoiceIt.addNotificationUrl("https://voiceit.io");
+    } catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		assertEquals("?notificationURL=https%3A%2F%2Fvoiceit.io", myVoiceIt.getNotificationUrl());
+    myVoiceIt.removeNotificationUrl();
+		assertEquals("", myVoiceIt.getNotificationUrl());
+  }
+
+  @Test
   void TestBasics() {
-	VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
 
     String ret = "";
 
@@ -456,17 +469,17 @@ class TestVoiceIt2 {
 
   @Test
   void TestFace() {
-	VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
 
-	String ret = "";
-	ret = myVoiceIt.createUser();
-	String userId1 = getUserId(ret);
-	ret = myVoiceIt.createUser();
-	String userId2 = getUserId(ret);
-	ret = myVoiceIt.createGroup("Sample Group Description");
-	String groupId = getGroupId(ret);
-	myVoiceIt.addUserToGroup(groupId, userId1);
-	myVoiceIt.addUserToGroup(groupId, userId2);
+    String ret = "";
+    ret = myVoiceIt.createUser();
+    String userId1 = getUserId(ret);
+    ret = myVoiceIt.createUser();
+    String userId2 = getUserId(ret);
+    ret = myVoiceIt.createGroup("Sample Group Description");
+    String groupId = getGroupId(ret);
+    myVoiceIt.addUserToGroup(groupId, userId1);
+    myVoiceIt.addUserToGroup(groupId, userId2);
 
     // Create Face Enrollments
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/faceEnrollmentArmaan1.mp4", "./faceEnrollmentArmaan1.mp4");
