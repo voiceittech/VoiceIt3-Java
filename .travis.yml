@@ -1,7 +1,7 @@
 if: branch = master
 language: java
 jdk:
-  - oraclejdk9
+  - oraclejdk11
 script: mvn dependency:resolve && mvn test
 after_success:
   - ./release.sh
