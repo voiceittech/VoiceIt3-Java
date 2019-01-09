@@ -681,10 +681,10 @@ public class VoiceIt2 {
 	}
 
 
-	public String createUserToken(String userId, int timeOut) {
+	public String createUserToken(String userId, int secondsToTimeout) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/users/" + userId + "/token?timeOut" + Integer.toString(timeOut))).getEntity());
+					new HttpPost(BASE_URL + "/users/" + userId + "/token?timeOut" + Integer.toString(secondsToTimeout))).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
