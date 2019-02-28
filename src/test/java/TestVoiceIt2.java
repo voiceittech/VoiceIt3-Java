@@ -354,23 +354,23 @@ class TestVoiceIt2 {
     myVoiceIt.addUserToGroup(groupId, userId2);
 
     // Create Voice Enrollments
-    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentNoel1.wav", "./enrollmentNoel1.wav");
-    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentNoel2.wav", "./enrollmentNoel2.wav");
-    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentNoel3.wav", "./enrollmentNoel3.wav");
-    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationNoel1.wav", "./verificationNoel1.wav");
+    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentA1.wav", "./enrollmentA1.wav");
+    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentA2.wav", "./enrollmentA2.wav");
+    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentA3.wav", "./enrollmentA3.wav");
+    downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationA1.wav", "./verificationA1.wav");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentC1.wav", "./enrollmentC1.wav");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentC2.wav", "./enrollmentC2.wav");
     downloadFile("https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentC3.wav", "./enrollmentC3.wav");
 
-    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentNoel1.wav");
+    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentA1.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentNoel2.wav");
+    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentA2.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentNoel3.wav");
+    ret = myVoiceIt.createVoiceEnrollment(userId1, "en-US", phrase, "./enrollmentA3.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
@@ -391,21 +391,21 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
 
     // Voice Verification
-    ret = myVoiceIt.voiceVerification(userId1, "en-US", phrase, "./verificationNoel1.wav");
+    ret = myVoiceIt.voiceVerification(userId1, "en-US", phrase, "./verificationA1.wav");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.voiceVerification(userId1, "en-US", phrase, new File("./verificationNoel1.wav"));
+    ret = myVoiceIt.voiceVerification(userId1, "en-US", phrase, new File("./verificationA1.wav"));
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
     // Voice Identification
-    ret = myVoiceIt.voiceIdentification(groupId, "en-US", phrase, "./verificationNoel1.wav");
+    ret = myVoiceIt.voiceIdentification(groupId, "en-US", phrase, "./verificationA1.wav");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
-    ret = myVoiceIt.voiceIdentification(groupId, "en-US", phrase, new File("./verificationNoel1.wav"));
+    ret = myVoiceIt.voiceIdentification(groupId, "en-US", phrase, new File("./verificationA1.wav"));
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
@@ -426,15 +426,15 @@ class TestVoiceIt2 {
     myVoiceIt.addUserToGroup(groupId, userId2);
 
     // Create Voice Enrollments By URL
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentNoel1.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentA1.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentNoel2.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentA2.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentNoel3.wav");
+    ret = myVoiceIt.createVoiceEnrollmentByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/enrollmentA3.wav");
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
@@ -451,12 +451,12 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
 
     // Voice Verification
-    ret = myVoiceIt.voiceVerificationByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationNoel1.wav");
+    ret = myVoiceIt.voiceVerificationByUrl(userId1, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationA1.wav");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
     // Voice Identification
-    ret = myVoiceIt.voiceIdentificationByUrl(groupId, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationNoel1.wav");
+    ret = myVoiceIt.voiceIdentificationByUrl(groupId, "en-US", phrase, "https://s3.amazonaws.com/voiceit-api2-testing-files/test-data/verificationA1.wav");
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
@@ -468,10 +468,10 @@ class TestVoiceIt2 {
     myVoiceIt.deleteGroup(groupId);
 
 
-    deleteFile("./enrollmentNoel1.wav");
-    deleteFile("./enrollmentNoel2.wav");
-    deleteFile("./enrollmentNoel3.wav");
-    deleteFile("./verificationNoel1.wav");
+    deleteFile("./enrollmentA1.wav");
+    deleteFile("./enrollmentA2.wav");
+    deleteFile("./enrollmentA3.wav");
+    deleteFile("./verificationA1.wav");
     deleteFile("./enrollmentC1.wav");
     deleteFile("./enrollmentC2.wav");
     deleteFile("./enrollmentC3.wav");
