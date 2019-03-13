@@ -5,7 +5,6 @@ jdk:
 script: mvn dependency:resolve && mvn test
 after_success:
   - ./release.sh
-  - ./email.sh
 notifications:
   slack:
     secure: CSmLfsgP9fVZaAUggl8yIoSgUFdeiWS4D4skAbmJY/ZCMV2Qm7DuS7zzMIhPiIP8+n/E/mov+CsCypVVtXwBL3ZDAVqPdDZaegy3snVdeTF62uQwORIKxXkAZI536q4M0l/Yx2Ii4QqaqLFYb2YlrTxMQXt7GCouCFq+RSpOIEYddgeSeuUSiCYLOequ+JE7Kzv3yidPfjpAeeW5Eb4y83sIGUXlkHF01Yi7K6RZXj5FKpJVn1wnd1R+jycxUwiMwX9HnAuyO7mjHrBhUuEYjlY5Na6LWam8Lhz46koBFV+0NU4F5qAcRvNPUXXCNWnDb/b+MjNzP7fRSkfLdBEV8RBzx/BJHTm1L4SLGNHoRw0j5Q+HKJxzVw7MMgN99tre3M6v2FW9NTS25us1mCWWOshjLfB/Za+ED+1YIuQWdYgYxoYoLKkFxHtjPQVYMlhusJ5/Niy7zVvDw6rUU8ZGWLGqZ3QjJmieqNQm9/iyK/qFdcx6TMrUiF14YSogZ8akfh+zhbWOMMlJv1sI0d6cgPH8NZDehrm8z6i26ytOmEfBqHJpcR/qjuovR1AKAkAulfw4wPQtgPBf6BPhP/YaRaQVbMNYjMeOsxw/Z8rx0tr6vO+zvgSFVpIXYFRx3pSYS/3LAQPjTLsJ2J1AyhKuzaUZ6onPlcw3TpCagpm6SKQ=
