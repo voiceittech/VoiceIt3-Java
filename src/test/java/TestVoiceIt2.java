@@ -162,7 +162,7 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
 
     // Expire User Token
-    ret = myVoiceIt.expireUserToken(userId);
+    ret = myVoiceIt.expireUserTokens(userId);
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
