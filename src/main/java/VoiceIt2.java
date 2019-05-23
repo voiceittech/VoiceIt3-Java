@@ -35,7 +35,7 @@ public class VoiceIt2 {
 	private static String BASE_URL = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
-	public static final String VERSION = "1.3.1";
+	public static final String VERSION = "1.4.0";
 
 	public VoiceIt2(String apiKey, String apiToken){
 			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
@@ -364,60 +364,6 @@ public class VoiceIt2 {
 
 		try {
 			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
-	public String deleteVoiceEnrollment(String userId, int enrollmentId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/voice/" + userId + "/" + Integer.toString(enrollmentId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
-	public String deleteFaceEnrollment(String userId, int faceEnrollmentId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/face/" + userId + "/" + Integer.toString(faceEnrollmentId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
-	public String deleteVideoEnrollment(String userId, int enrollmentId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/video/" + userId + "/" + Integer.toString(enrollmentId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
-	public String deleteAllVoiceEnrollments(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/voice" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
-	public String deleteAllFaceEnrollments(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/face" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
-	public String deleteAllVideoEnrollments(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/video" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}

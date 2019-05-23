@@ -254,23 +254,10 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
-    // Delete Individual Video Enrollments
-    ret = myVoiceIt.deleteVideoEnrollment(userId1, enrollmentId1);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteVideoEnrollment(userId1, enrollmentId2);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteVideoEnrollment(userId1, enrollmentId3);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
 
     // Delete All Enrollments
-    ret = myVoiceIt.deleteAllVideoEnrollments(userId2);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
+    myVoiceIt.deleteAllEnrollments(userId1);
+    myVoiceIt.deleteAllEnrollments(userId2);
 
     // Reset for ...ByUrl operations
     myVoiceIt.deleteUser(userId1);
@@ -323,8 +310,8 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
-    myVoiceIt.deleteAllVideoEnrollments(userId1);
-    myVoiceIt.deleteAllVideoEnrollments(userId2);
+    myVoiceIt.deleteAllEnrollments(userId1);
+    myVoiceIt.deleteAllEnrollments(userId2);
     myVoiceIt.deleteUser(userId1);
     myVoiceIt.deleteUser(userId2);
     myVoiceIt.deleteGroup(groupId);
@@ -403,8 +390,8 @@ class TestVoiceIt2 {
     assertEquals(userId1, getUserId(ret));
 
     // Reset for ...ByUrl operations
-    myVoiceIt.deleteAllVoiceEnrollments(userId1);
-    myVoiceIt.deleteAllVoiceEnrollments(userId2);
+    myVoiceIt.deleteAllEnrollments(userId1);
+    myVoiceIt.deleteAllEnrollments(userId2);
     myVoiceIt.deleteUser(userId1);
     myVoiceIt.deleteUser(userId2);
     myVoiceIt.deleteGroup(groupId);
@@ -453,8 +440,8 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(userId1, getUserId(ret));
 
-    myVoiceIt.deleteAllVoiceEnrollments(userId1);
-    myVoiceIt.deleteAllVoiceEnrollments(userId2);
+    myVoiceIt.deleteAllEnrollments(userId1);
+    myVoiceIt.deleteAllEnrollments(userId2);
     myVoiceIt.deleteUser(userId1);
     myVoiceIt.deleteUser(userId2);
     myVoiceIt.deleteGroup(groupId);
@@ -539,22 +526,8 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(groupId, getGroupId(ret));
 
-    // Delete Face Enrollments Individually
-    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId1);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId2);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId3);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteAllFaceEnrollments(userId2);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
+    myVoiceIt.deleteAllEnrollments(userId1);
+    myVoiceIt.deleteAllEnrollments(userId2);
 
     myVoiceIt.deleteUser(userId1);
     myVoiceIt.deleteUser(userId2);
@@ -613,22 +586,8 @@ class TestVoiceIt2 {
     assertEquals("SUCC", getResponseCode(ret));
     assertEquals(groupId, getGroupId(ret));
 
-    // Delete Face Enrollments Individually
-    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId1);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId2);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteFaceEnrollment(userId1, faceEnrollmentId3);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
-    ret = myVoiceIt.deleteAllFaceEnrollments(userId2);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
+    myVoiceIt.deleteAllEnrollments(userId1);
+    myVoiceIt.deleteAllEnrollments(userId2);
 
     myVoiceIt.deleteUser(userId1);
     myVoiceIt.deleteUser(userId2);
