@@ -60,6 +60,11 @@ class TestVoiceIt2 {
     return obj.getString("groupId");
   }
 
+  String getAPIKey(String arg) {
+    JSONObject obj = new JSONObject(arg);
+    return obj.getString("apiKey");
+  }
+
   int getEnrollmentId(String arg) {
     JSONObject obj = new JSONObject(arg);
     return obj.getInt("id");
@@ -180,6 +185,38 @@ class TestVoiceIt2 {
     ret = myVoiceIt.deleteUser(userId);
     assertEquals(200, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
+
+  }
+
+  @Test
+  void testSubAccounts() {
+    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+
+    String ret = "";
+
+    // Create Managed Sub Account
+    ret = myVoiceIt.createManagedSubAccount("Test", "Java", "", "", "");
+    String managedSubAccountAPIKey = getAPIKey(ret);
+    assertEquals(201, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    // Create Unmanaged Sub Account
+    ret = myVoiceIt.createUnmanagedSubAccount("Test", "Java", "", "", "");
+    String unmanagedSubAccountAPIKey = getAPIKey(ret);
+    assertEquals(201, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    // Regenerate Sub Account API Token
+    ret = myVoiceIt.regenerateSubAccountAPIToken(unmanagedSubAccountAPIKey);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    // Delete Subaccount
+    ret = myVoiceIt.deleteSubAccount(unmanagedSubAccountAPIKey);
+    assertEquals(200, getStatus(ret));
+    assertEquals("SUCC", getResponseCode(ret));
+
+    myVoiceIt.deleteSubAccount(managedSubAccountAPIKey);
 
   }
 
