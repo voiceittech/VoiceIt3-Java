@@ -35,7 +35,7 @@ public class VoiceIt2 {
 	private static String BASE_URL = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
-	public static final String VERSION = "1.5.0";
+	public static final String VERSION = "1.6.0";
 
 	public VoiceIt2(String apiKey, String apiToken){
 			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
@@ -675,6 +675,15 @@ public class VoiceIt2 {
 
 		try {
 			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	public String switchSubAccountType(String subAccountAPIKey) {
+		try {
+			return EntityUtils.toString(httpClient.execute(
+					new HttpPost(BASE_URL + "/subaccount/" + subAccountAPIKey + "/switchType" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
