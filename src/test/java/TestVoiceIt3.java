@@ -5,11 +5,11 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 import org.json.*;
 import org.apache.commons.io.FileUtils;
-import voiceit.java.VoiceIt2;
+import voiceit.java.VoiceIt3;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TestVoiceIt2 {
+class TestVoiceIt3 {
 
 	private String apiKey = System.getenv("VIAPIKEY");
 	private String apiTok = System.getenv("VIAPITOKEN");
@@ -77,11 +77,11 @@ class TestVoiceIt2 {
 
   @Test
   void TestWebhook() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    VoiceIt3 myVoiceIt = new VoiceIt3(apiKey, apiTok);
 
     if (System.getenv("BOXFUSE_ENV").equals("voiceittest")) {
       try {
-        Files.write(Paths.get(System.getenv("HOME") + "/platformVersion"), VoiceIt2.VERSION.getBytes());
+        Files.write(Paths.get(System.getenv("HOME") + "/platformVersion"), VoiceIt3.VERSION.getBytes());
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }
@@ -99,7 +99,7 @@ class TestVoiceIt2 {
 
   @Test
   void TestBasics() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    VoiceIt3 myVoiceIt = new VoiceIt3(apiKey, apiTok);
 
     String ret = "";
 
@@ -189,7 +189,7 @@ class TestVoiceIt2 {
 
   @Test
   void testSubAccounts() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    VoiceIt3 myVoiceIt = new VoiceIt3(apiKey, apiTok);
 
     String ret = "";
 
@@ -222,7 +222,7 @@ class TestVoiceIt2 {
 
   @Test
   void TestVideo() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    VoiceIt3 myVoiceIt = new VoiceIt3(apiKey, apiTok);
 
     String ret = "";
     ret = myVoiceIt.createUser();
@@ -365,7 +365,7 @@ class TestVoiceIt2 {
 
   @Test
   void TestVoice() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    VoiceIt3 myVoiceIt = new VoiceIt3(apiKey, apiTok);
 
     String ret = "";
     ret = myVoiceIt.createUser();
@@ -495,7 +495,7 @@ class TestVoiceIt2 {
 
   @Test
   void TestFace() {
-    VoiceIt2 myVoiceIt = new VoiceIt2(apiKey, apiTok);
+    VoiceIt3 myVoiceIt = new VoiceIt3(apiKey, apiTok);
 
     String ret = "";
     ret = myVoiceIt.createUser();
