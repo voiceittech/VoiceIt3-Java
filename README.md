@@ -1,6 +1,6 @@
 <img src="./java.png" width="100%" style="width:100%" />
 
-# VoiceIt2-Java [![travisstatus](https://travis-ci.com/voiceittech/VoiceIt2-Java.svg?branch=master)](https://travis-ci.com/voiceittech/VoiceIt2-Java) [![](https://jitpack.io/v/voiceittech/VoiceIt2-Java.svg)](https://jitpack.io/#voiceittech/VoiceIt2-Java) ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
+# VoiceIt3-Java [![travisstatus](https://travis-ci.com/voiceittech/VoiceIt3-Java.svg?branch=master)](https://travis-ci.com/voiceittech/VoiceIt3-Java) [![](https://jitpack.io/v/voiceittech/VoiceIt3-Java.svg)](https://jitpack.io/#voiceittech/VoiceIt3-Java) ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
 
 A Java wrapper for VoiceIt's API 2.0 featuring Voice + Face Verification and Identification.
 
@@ -17,5 +17,5 @@ Contact us with any questions at support@voiceit.io
 
 ## License
 
-VoiceIt2-Java is available under the MIT license. See the LICENSE file for more info.
+VoiceIt3-Java is available under the MIT license. See the LICENSE file for more info.
 
