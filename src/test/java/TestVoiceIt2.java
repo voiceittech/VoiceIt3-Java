@@ -205,10 +205,6 @@ class TestVoiceIt2 {
     assertEquals(201, getStatus(ret));
     assertEquals("SUCC", getResponseCode(ret));
 
-    ret = myVoiceIt.switchSubAccountType(unmanagedSubAccountAPIKey);
-    assertEquals(200, getStatus(ret));
-    assertEquals("SUCC", getResponseCode(ret));
-
     // Regenerate Sub Account API Token
     ret = myVoiceIt.regenerateSubAccountAPIToken(unmanagedSubAccountAPIKey);
     assertEquals(200, getStatus(ret));

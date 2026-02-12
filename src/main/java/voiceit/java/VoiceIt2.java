@@ -680,14 +680,6 @@ public class VoiceIt2 {
 		}
 	}
 
-	public String switchSubAccountType(String subAccountAPIKey) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/subaccount/" + subAccountAPIKey + "/switchType" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
 
 	public String regenerateSubAccountAPIToken(String subAccountAPIKey) {
 		try {
