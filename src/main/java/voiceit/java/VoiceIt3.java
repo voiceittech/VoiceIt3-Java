@@ -30,20 +30,20 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 
-public class VoiceIt2 {
+public class VoiceIt3 {
 
 	private static String BASE_URL = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
 	public static final String VERSION = "1.6.2";
 
-	public VoiceIt2(String apiKey, String apiToken){
+	public VoiceIt3(String apiKey, String apiToken){
 			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
 			setup(clientBuilder, apiKey, apiToken);
 			httpClient = clientBuilder.build();
 	}
 
-	public VoiceIt2(String apiKey, String apiToken, String customBaseURL) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
+	public VoiceIt3(String apiKey, String apiToken, String customBaseURL) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
 		// Setting custom host URL and SSL Context
 		BASE_URL = customBaseURL;
     	SSLContext sslContext = SSLContext.getInstance("TLS");
