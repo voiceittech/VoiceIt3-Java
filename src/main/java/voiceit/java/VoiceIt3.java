@@ -32,7 +32,7 @@ import org.apache.http.util.EntityUtils;
 
 public class VoiceIt3 {
 
-	private static String BASE_URL = "https://qpi.voiceit.io";
+	private static String BASE_URL = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
 	public static final String VERSION = "1.6.2";
