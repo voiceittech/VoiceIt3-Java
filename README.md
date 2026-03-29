@@ -1,6 +1,5 @@
 <img src="./java.png" width="100%" style="width:100%" />
 
-# VoiceIt3-Java [![CI](https://github.com/voiceittech/VoiceIt3-Java/actions/workflows/ci.yml/badge.svg)](https://github.com/voiceittech/VoiceIt3-Java/actions/workflows/ci.yml) [![](https://jitpack.io/v/voiceittech/VoiceIt3-Java.svg)](https://jitpack.io/#voiceittech/VoiceIt3-Java) ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
 
 A Java wrapper for VoiceIt's API 3.0 featuring Voice + Face Verification and Identification.
 
@@ -13,7 +12,7 @@ You can visit our [HTTP API 3.0 Documentation](https://api.voiceit.io/?java#intr
 
 ## Support
 
-Contact us with any questions at support@voiceit.io
+Contact us with any questions at support@voiceit.tech
 
 ## License
 
