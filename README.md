@@ -16,8 +16,8 @@ Add as a dependency via Maven:
 ```xml
 <dependency>
   <groupId>com.github.voiceittech</groupId>
-  <artifactId>VoiceIt3-Java</artifactId>
-  <version>1.6.2</version>
+  <artifactId>voiceit3-java</artifactId>
+  <version>3.0.0</version>
 </dependency>
 ```
 
@@ -32,8 +32,10 @@ Sign up at [voiceit.io/pricing](https://voiceit.io/pricing) to get your API Key 
 
 <img src="./Graphics/getcredentials.png" alt="API Key and Token" width="400px" />
 
-## API calls
+## API Calls
+
 You can visit our [HTTP API 3.0 Documentation](https://voiceit.io/documentation) for detailed information on each API call.
+
 ## Support
 
 If you find this SDK useful, please consider giving it a star on GitHub — it helps others discover the project!
@@ -42,5 +44,5 @@ If you find this SDK useful, please consider giving it a star on GitHub — it h
 
 ## License
 
-VoiceIt3-Java is available under the MIT license. See the LICENSE file for more info.
+voiceit3-java is available under the MIT license. See the LICENSE file for more info.
 
