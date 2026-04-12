@@ -14,7 +14,7 @@ class TestVoiceIt3 {
 	private String apiKey = System.getenv("VIAPIKEY");
 	private String apiTok = System.getenv("VIAPITOKEN");
 
-	private String phrase = "never forget tomorrow is a new day";
+	private String phrase = "Never forget tomorrow is a new day";
 
   void downloadFile(String source, String destination) {
     try {

@@ -8,7 +8,7 @@ public class TestExample {
         if (ak == null || at == null) { System.out.println("Set env vars"); System.exit(1); }
 
         VoiceIt3 vi = new VoiceIt3(ak, at);
-        String phrase = "never forget tomorrow is a new day";
+        String phrase = "Never forget tomorrow is a new day";
         String td = "../test-data";
         int errors = 0;
 
