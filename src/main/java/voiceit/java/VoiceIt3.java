@@ -4,18 +4,9 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
@@ -35,7 +26,7 @@ public class VoiceIt3 {
 	private static String BASE_URL = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
-	public static final String VERSION = "3.0.3";
+	public static final String VERSION = "3.0.4";
 
 	public VoiceIt3(String apiKey, String apiToken){
 			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
@@ -43,19 +34,28 @@ public class VoiceIt3 {
 			httpClient = clientBuilder.build();
 	}
 
-	public VoiceIt3(String apiKey, String apiToken, String customBaseURL) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
-		// Setting custom host URL and SSL Context
+	/**
+	 * Construct a VoiceIt3 client that talks to a custom base URL (for example,
+	 * an on-premise deployment). TLS certificate and hostname verification use
+	 * the JVM's default trust store and PKIX validation — unchanged from the
+	 * standard constructor. To trust a private CA, add it to the JVM trust
+	 * store (cacerts) or use the (SSLContext) overload below.
+	 */
+	public VoiceIt3(String apiKey, String apiToken, String customBaseURL) {
 		BASE_URL = customBaseURL;
-    	SSLContext sslContext = SSLContext.getInstance("TLS");
-		sslContext.init(null, new X509TrustManager[] { new X509TrustManager() {
-		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
-		public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
-		public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0];}}}, new SecureRandom());
-		HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-			public boolean verify(String hostname, SSLSession session) { return true; }
-		};
 		HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-		clientBuilder.setSSLContext(sslContext).setSSLHostnameVerifier(hostnameVerifier);
+		setup(clientBuilder, apiKey, apiToken);
+		httpClient = clientBuilder.build();
+	}
+
+	/**
+	 * Construct a VoiceIt3 client with a caller-supplied SSLContext. Use this
+	 * overload when you need to trust a private CA or enforce certificate
+	 * pinning. Never construct an SSLContext that accepts all certificates.
+	 */
+	public VoiceIt3(String apiKey, String apiToken, String customBaseURL, SSLContext sslContext) {
+		BASE_URL = customBaseURL;
+		HttpClientBuilder clientBuilder = HttpClientBuilder.create().setSSLContext(sslContext);
 		setup(clientBuilder, apiKey, apiToken);
 		httpClient = clientBuilder.build();
 	}
