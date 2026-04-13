@@ -8,28 +8,34 @@ import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.*;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicHeader;
 
 public class VoiceIt3 {
 
 	private static String BASE_URL = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
-	public static final String VERSION = "3.0.5";
+	public static final String VERSION = "3.1.0";
 
 	public VoiceIt3(String apiKey, String apiToken){
-			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+			HttpClientBuilder clientBuilder = HttpClients.custom();
 			setup(clientBuilder, apiKey, apiToken);
 			httpClient = clientBuilder.build();
 	}
@@ -43,7 +49,7 @@ public class VoiceIt3 {
 	 */
 	public VoiceIt3(String apiKey, String apiToken, String customBaseURL) {
 		BASE_URL = customBaseURL;
-		HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+		HttpClientBuilder clientBuilder = HttpClients.custom();
 		setup(clientBuilder, apiKey, apiToken);
 		httpClient = clientBuilder.build();
 	}
@@ -55,7 +61,10 @@ public class VoiceIt3 {
 	 */
 	public VoiceIt3(String apiKey, String apiToken, String customBaseURL, SSLContext sslContext) {
 		BASE_URL = customBaseURL;
-		HttpClientBuilder clientBuilder = HttpClientBuilder.create().setSSLContext(sslContext);
+		HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
+			.setTlsSocketStrategy(new DefaultClientTlsStrategy(sslContext))
+			.build();
+		HttpClientBuilder clientBuilder = HttpClients.custom().setConnectionManager(cm);
 		setup(clientBuilder, apiKey, apiToken);
 		httpClient = clientBuilder.build();
 	}
@@ -71,11 +80,27 @@ public class VoiceIt3 {
 	}
 
 	private void setup(HttpClientBuilder clientBuilder, String apiKey, String apiToken) {
-	      CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-	      credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(apiKey, apiToken));
+	      BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+	      credentialsProvider.setCredentials(
+	          new AuthScope(null, -1),
+	          new UsernamePasswordCredentials(apiKey, apiToken.toCharArray()));
 	      clientBuilder
 	      .setDefaultCredentialsProvider(credentialsProvider)
 	      .setDefaultHeaders(Arrays.asList(new BasicHeader("platformId", "29"), new BasicHeader("platformVersion", VERSION)));
+	}
+
+	/**
+	 * Execute a request and return the response body as a String. Wraps the
+	 * try-with-resources lifecycle that HttpClient 5 requires so call sites
+	 * stay one-liners.
+	 */
+	private String exec(ClassicHttpRequest request) {
+		try (ClassicHttpResponse response = httpClient.executeOpen(null, request, null)) {
+			HttpEntity entity = response.getEntity();
+			return entity == null ? "" : EntityUtils.toString(entity);
+		} catch (Exception e) {
+			return e.getMessage();
+		}
 	}
 
   public String getNotificationUrl(){
@@ -91,84 +116,39 @@ public class VoiceIt3 {
   }
 
 	public String getPhrases(String contentLanguage) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/phrases/" + enc(contentLanguage) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/phrases/" + enc(contentLanguage) + notificationUrl));
 	}
 
 	public String getAllUsers() {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/users" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/users" + notificationUrl));
 	}
 
 	public String createUser() {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/users" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpPost(BASE_URL + "/users" + notificationUrl));
 	}
 
 	public String checkUserExists(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/users/" + enc(userId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/users/" + enc(userId) + notificationUrl));
 	}
 
 	public String deleteUser(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/users/" + enc(userId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpDelete(BASE_URL + "/users/" + enc(userId) + notificationUrl));
 	}
 
 	public String getGroupsForUser(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/users/" + enc(userId) + "/groups" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/users/" + enc(userId) + "/groups" + notificationUrl));
 	}
 
 	public String getAllGroups() {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/groups" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/groups" + notificationUrl));
 	}
 
 	public String getGroup(String groupId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/groups/" + enc(groupId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/groups/" + enc(groupId) + notificationUrl));
 	}
 
 	public String groupExists(String groupId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/groups/" + enc(groupId) + "/exists" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/groups/" + enc(groupId) + "/exists" + notificationUrl));
 	}
 
 	public String createGroup(String description) {
@@ -180,11 +160,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/groups" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String addUserToGroup(String groupId, String userId) {
@@ -197,60 +173,31 @@ public class VoiceIt3 {
 		HttpPut httpPut = new HttpPut(BASE_URL + "/groups/addUser" + notificationUrl);
 		httpPut.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPut).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPut);
 	}
 
 	public String removeUserFromGroup(String groupId, String userId) {
-		try {
-			String url = BASE_URL + "/groups/removeUser?groupId=" + groupId + "&userId=" + userId;
-			if (!notificationUrl.isEmpty()) {
-				url += "&" + notificationUrl.substring(1);
-			}
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(url)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
+		String url = BASE_URL + "/groups/removeUser?groupId=" + enc(groupId) + "&userId=" + enc(userId);
+		if (!notificationUrl.isEmpty()) {
+			url += "&" + notificationUrl.substring(1);
 		}
+		return exec(new HttpDelete(url));
 	}
 
 	public String deleteGroup(String groupId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/groups/" + enc(groupId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpDelete(BASE_URL + "/groups/" + enc(groupId) + notificationUrl));
 	}
 
 	public String getAllVoiceEnrollments(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/voice/" + enc(userId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/enrollments/voice/" + enc(userId) + notificationUrl));
 	}
 
 	public String getAllFaceEnrollments(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/face/" + enc(userId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/enrollments/face/" + enc(userId) + notificationUrl));
 	}
 
 	public String getAllVideoEnrollments(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/video/" + enc(userId) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpGet(BASE_URL + "/enrollments/video/" + enc(userId) + notificationUrl));
 	}
 
 	public String createVoiceEnrollment(String userId, String contentLanguage, String phrase, String recordingPath) {
@@ -269,11 +216,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String createVoiceEnrollmentByUrl(String userId, String contentLanguage, String phrase, String fileUrl) {
@@ -288,11 +231,7 @@ public class VoiceIt3 {
 			HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice/byUrl" + notificationUrl);
 			httpPost.setEntity(entity);
 
-			try {
-				return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-			} catch (Exception e) {
-				return e.getMessage();
-			}
+			return exec(httpPost);
 	}
 
 	public String createFaceEnrollment(String userId, String videoPath) {
@@ -309,11 +248,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String createFaceEnrollmentByUrl(String userId, String fileUrl) {
@@ -326,11 +261,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String createVideoEnrollment(String userId, String contentLanguage, String phrase, String videoPath) {
@@ -349,11 +280,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String createVideoEnrollmentByUrl(String userId, String contentLanguage, String phrase, String fileUrl) {
@@ -368,20 +295,11 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String deleteAllEnrollments(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + enc(userId) + "/all" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpDelete(BASE_URL + "/enrollments/" + enc(userId) + "/all" + notificationUrl));
 	}
 
 	public String voiceVerification(String userId, String contentLanguage, String phrase, String recordingPath) {
@@ -400,11 +318,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String voiceVerificationByUrl(String userId, String contentLanguage, String phrase, String fileUrl) {
@@ -419,11 +333,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String faceVerification(String userId, String videoPath) {
@@ -440,11 +350,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String faceVerificationByUrl(String userId, String fileUrl) {
@@ -457,11 +363,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
   public String videoVerification(String userId, String contentLanguage, String phrase, String videoPath) {
@@ -480,11 +382,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String videoVerificationByUrl(String userId, String contentLanguage, String phrase, String fileUrl) {
@@ -499,11 +397,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String voiceIdentification(String groupId, String contentLanguage, String phrase, String recordingPath) {
@@ -522,11 +416,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String voiceIdentificationByUrl(String groupId, String contentLanguage, String phrase, String fileUrl) {
@@ -541,11 +431,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String faceIdentification(String groupId, String videoPath) {
@@ -562,11 +448,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String faceIdentificationByUrl(String groupId, String fileUrl) {
@@ -579,11 +461,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String videoIdentification(String groupId, String contentLanguage, String phrase, String videoPath) {
@@ -602,11 +480,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String videoIdentificationByUrl(String groupId, String contentLanguage, String phrase, String fileUrl) {
@@ -621,29 +495,15 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String createUserToken(String userId, int secondsToTimeout) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/users/" + enc(userId) + "/token?timeOut=" + Integer.toString(secondsToTimeout))).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpPost(BASE_URL + "/users/" + enc(userId) + "/token?timeOut=" + Integer.toString(secondsToTimeout)));
 	}
 
 	public String expireUserTokens(String userId) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/users/" + enc(userId) + "/expireTokens" + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpPost(BASE_URL + "/users/" + enc(userId) + "/expireTokens" + notificationUrl));
 	}
 
 	public String createManagedSubAccount(String firstName, String lastName, String email, String password, String contentLanguage) {
@@ -659,11 +519,7 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/subaccount/managed" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 	public String createUnmanagedSubAccount(String firstName, String lastName, String email, String password, String contentLanguage) {
@@ -679,30 +535,16 @@ public class VoiceIt3 {
 		HttpPost httpPost = new HttpPost(BASE_URL + "/subaccount/unmanaged" + notificationUrl);
 		httpPost.setEntity(entity);
 
-		try {
-			return EntityUtils.toString(httpClient.execute(httpPost).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(httpPost);
 	}
 
 
 	public String regenerateSubAccountAPIToken(String subAccountAPIKey) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpPost(BASE_URL + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl));
 	}
 
 	public String deleteSubAccount(String subAccountAPIKey) {
-		try {
-			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl)).getEntity());
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return exec(new HttpDelete(BASE_URL + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl));
 	}
 
 }
