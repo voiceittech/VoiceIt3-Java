@@ -26,7 +26,7 @@ public class VoiceIt3 {
 	private static String BASE_URL = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
-	public static final String VERSION = "3.0.4";
+	public static final String VERSION = "3.0.5";
 
 	public VoiceIt3(String apiKey, String apiToken){
 			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
@@ -60,6 +60,16 @@ public class VoiceIt3 {
 		httpClient = clientBuilder.build();
 	}
 
+	// URL-encode a path segment so caller-supplied IDs containing '/'
+	// or '?' cannot change the endpoint or inject query parameters.
+	private static String enc(String s) {
+		try {
+			return URLEncoder.encode(s, "UTF-8");
+		} catch (java.io.UnsupportedEncodingException e) {
+			throw new RuntimeException("UTF-8 not supported", e);
+		}
+	}
+
 	private void setup(HttpClientBuilder clientBuilder, String apiKey, String apiToken) {
 	      CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 	      credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(apiKey, apiToken));
@@ -83,7 +93,7 @@ public class VoiceIt3 {
 	public String getPhrases(String contentLanguage) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/phrases/" + contentLanguage + notificationUrl)).getEntity());
+					new HttpGet(BASE_URL + "/phrases/" + enc(contentLanguage) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -110,7 +120,7 @@ public class VoiceIt3 {
 	public String checkUserExists(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/users/" + userId + notificationUrl)).getEntity());
+					new HttpGet(BASE_URL + "/users/" + enc(userId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -119,7 +129,7 @@ public class VoiceIt3 {
 	public String deleteUser(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/users/" + userId + notificationUrl)).getEntity());
+					new HttpDelete(BASE_URL + "/users/" + enc(userId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -128,7 +138,7 @@ public class VoiceIt3 {
 	public String getGroupsForUser(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/users/" + userId + "/groups" + notificationUrl)).getEntity());
+					new HttpGet(BASE_URL + "/users/" + enc(userId) + "/groups" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -146,7 +156,7 @@ public class VoiceIt3 {
 	public String getGroup(String groupId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/groups/" + groupId + notificationUrl)).getEntity());
+					new HttpGet(BASE_URL + "/groups/" + enc(groupId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -155,7 +165,7 @@ public class VoiceIt3 {
 	public String groupExists(String groupId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/groups/" + groupId + "/exists" + notificationUrl)).getEntity());
+					new HttpGet(BASE_URL + "/groups/" + enc(groupId) + "/exists" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -210,7 +220,7 @@ public class VoiceIt3 {
 	public String deleteGroup(String groupId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/groups/" + groupId + notificationUrl)).getEntity());
+					new HttpDelete(BASE_URL + "/groups/" + enc(groupId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -219,7 +229,7 @@ public class VoiceIt3 {
 	public String getAllVoiceEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/voice/" + userId + notificationUrl)).getEntity());
+					new HttpGet(BASE_URL + "/enrollments/voice/" + enc(userId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -228,7 +238,7 @@ public class VoiceIt3 {
 	public String getAllFaceEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/face/" + userId + notificationUrl)).getEntity());
+					new HttpGet(BASE_URL + "/enrollments/face/" + enc(userId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -237,7 +247,7 @@ public class VoiceIt3 {
 	public String getAllVideoEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpGet(BASE_URL + "/enrollments/video/" + userId + notificationUrl)).getEntity());
+					new HttpGet(BASE_URL + "/enrollments/video/" + enc(userId) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -368,7 +378,7 @@ public class VoiceIt3 {
 	public String deleteAllEnrollments(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/enrollments/" + userId + "/all" + notificationUrl)).getEntity());
+					new HttpDelete(BASE_URL + "/enrollments/" + enc(userId) + "/all" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -621,7 +631,7 @@ public class VoiceIt3 {
 	public String createUserToken(String userId, int secondsToTimeout) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/users/" + userId + "/token?timeOut=" + Integer.toString(secondsToTimeout))).getEntity());
+					new HttpPost(BASE_URL + "/users/" + enc(userId) + "/token?timeOut=" + Integer.toString(secondsToTimeout))).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -630,7 +640,7 @@ public class VoiceIt3 {
 	public String expireUserTokens(String userId) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/users/" + userId + "/expireTokens" + notificationUrl)).getEntity());
+					new HttpPost(BASE_URL + "/users/" + enc(userId) + "/expireTokens" + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -680,7 +690,7 @@ public class VoiceIt3 {
 	public String regenerateSubAccountAPIToken(String subAccountAPIKey) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpPost(BASE_URL + "/subaccount/" + subAccountAPIKey + notificationUrl)).getEntity());
+					new HttpPost(BASE_URL + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -689,7 +699,7 @@ public class VoiceIt3 {
 	public String deleteSubAccount(String subAccountAPIKey) {
 		try {
 			return EntityUtils.toString(httpClient.execute(
-					new HttpDelete(BASE_URL + "/subaccount/" + subAccountAPIKey + notificationUrl)).getEntity());
+					new HttpDelete(BASE_URL + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl)).getEntity());
 		} catch (Exception e) {
 			return e.getMessage();
 		}
