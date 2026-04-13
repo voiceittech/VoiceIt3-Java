@@ -35,7 +35,7 @@ public class VoiceIt3 {
 	private static String BASE_URL = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
-	public static final String VERSION = "1.6.2";
+	public static final String VERSION = "3.0.3";
 
 	public VoiceIt3(String apiKey, String apiToken){
 			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
