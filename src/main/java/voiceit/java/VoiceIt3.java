@@ -29,7 +29,7 @@ import org.apache.hc.core5.http.message.BasicHeader;
 
 public class VoiceIt3 {
 
-	private static String BASE_URL = "https://api.voiceit.io";
+	private String baseUrl = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
 	public static final String VERSION = "3.1.0";
@@ -48,7 +48,7 @@ public class VoiceIt3 {
 	 * store (cacerts) or use the (SSLContext) overload below.
 	 */
 	public VoiceIt3(String apiKey, String apiToken, String customBaseURL) {
-		BASE_URL = customBaseURL;
+		baseUrl = customBaseURL;
 		HttpClientBuilder clientBuilder = HttpClients.custom();
 		setup(clientBuilder, apiKey, apiToken);
 		httpClient = clientBuilder.build();
@@ -60,7 +60,7 @@ public class VoiceIt3 {
 	 * pinning. Never construct an SSLContext that accepts all certificates.
 	 */
 	public VoiceIt3(String apiKey, String apiToken, String customBaseURL, SSLContext sslContext) {
-		BASE_URL = customBaseURL;
+		baseUrl = customBaseURL;
 		HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
 			.setTlsSocketStrategy(new DefaultClientTlsStrategy(sslContext))
 			.build();
@@ -116,39 +116,39 @@ public class VoiceIt3 {
   }
 
 	public String getPhrases(String contentLanguage) {
-		return exec(new HttpGet(BASE_URL + "/phrases/" + enc(contentLanguage) + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/phrases/" + enc(contentLanguage) + notificationUrl));
 	}
 
 	public String getAllUsers() {
-		return exec(new HttpGet(BASE_URL + "/users" + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/users" + notificationUrl));
 	}
 
 	public String createUser() {
-		return exec(new HttpPost(BASE_URL + "/users" + notificationUrl));
+		return exec(new HttpPost(baseUrl + "/users" + notificationUrl));
 	}
 
 	public String checkUserExists(String userId) {
-		return exec(new HttpGet(BASE_URL + "/users/" + enc(userId) + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/users/" + enc(userId) + notificationUrl));
 	}
 
 	public String deleteUser(String userId) {
-		return exec(new HttpDelete(BASE_URL + "/users/" + enc(userId) + notificationUrl));
+		return exec(new HttpDelete(baseUrl + "/users/" + enc(userId) + notificationUrl));
 	}
 
 	public String getGroupsForUser(String userId) {
-		return exec(new HttpGet(BASE_URL + "/users/" + enc(userId) + "/groups" + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/users/" + enc(userId) + "/groups" + notificationUrl));
 	}
 
 	public String getAllGroups() {
-		return exec(new HttpGet(BASE_URL + "/groups" + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/groups" + notificationUrl));
 	}
 
 	public String getGroup(String groupId) {
-		return exec(new HttpGet(BASE_URL + "/groups/" + enc(groupId) + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/groups/" + enc(groupId) + notificationUrl));
 	}
 
 	public String groupExists(String groupId) {
-		return exec(new HttpGet(BASE_URL + "/groups/" + enc(groupId) + "/exists" + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/groups/" + enc(groupId) + "/exists" + notificationUrl));
 	}
 
 	public String createGroup(String description) {
@@ -157,7 +157,7 @@ public class VoiceIt3 {
 		    .create()
 		    .addTextBody("description", description)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/groups" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/groups" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -170,14 +170,14 @@ public class VoiceIt3 {
 		    .addTextBody("groupId", groupId)
 		    .addTextBody("userId", userId)
 		    .build();
-		HttpPut httpPut = new HttpPut(BASE_URL + "/groups/addUser" + notificationUrl);
+		HttpPut httpPut = new HttpPut(baseUrl + "/groups/addUser" + notificationUrl);
 		httpPut.setEntity(entity);
 
 		return exec(httpPut);
 	}
 
 	public String removeUserFromGroup(String groupId, String userId) {
-		String url = BASE_URL + "/groups/removeUser?groupId=" + enc(groupId) + "&userId=" + enc(userId);
+		String url = baseUrl + "/groups/removeUser?groupId=" + enc(groupId) + "&userId=" + enc(userId);
 		if (!notificationUrl.isEmpty()) {
 			url += "&" + notificationUrl.substring(1);
 		}
@@ -185,19 +185,19 @@ public class VoiceIt3 {
 	}
 
 	public String deleteGroup(String groupId) {
-		return exec(new HttpDelete(BASE_URL + "/groups/" + enc(groupId) + notificationUrl));
+		return exec(new HttpDelete(baseUrl + "/groups/" + enc(groupId) + notificationUrl));
 	}
 
 	public String getAllVoiceEnrollments(String userId) {
-		return exec(new HttpGet(BASE_URL + "/enrollments/voice/" + enc(userId) + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/enrollments/voice/" + enc(userId) + notificationUrl));
 	}
 
 	public String getAllFaceEnrollments(String userId) {
-		return exec(new HttpGet(BASE_URL + "/enrollments/face/" + enc(userId) + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/enrollments/face/" + enc(userId) + notificationUrl));
 	}
 
 	public String getAllVideoEnrollments(String userId) {
-		return exec(new HttpGet(BASE_URL + "/enrollments/video/" + enc(userId) + notificationUrl));
+		return exec(new HttpGet(baseUrl + "/enrollments/video/" + enc(userId) + notificationUrl));
 	}
 
 	public String createVoiceEnrollment(String userId, String contentLanguage, String phrase, String recordingPath) {
@@ -213,7 +213,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/enrollments/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -228,7 +228,7 @@ public class VoiceIt3 {
 			    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 			    .addTextBody("fileUrl", fileUrl)
 			    .build();
-			HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/voice/byUrl" + notificationUrl);
+			HttpPost httpPost = new HttpPost(baseUrl + "/enrollments/voice/byUrl" + notificationUrl);
 			httpPost.setEntity(entity);
 
 			return exec(httpPost);
@@ -245,7 +245,7 @@ public class VoiceIt3 {
 		    .addTextBody("userId", userId)
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/enrollments/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -258,7 +258,7 @@ public class VoiceIt3 {
 		    .addTextBody("userId", userId)
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/face/byUrl" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/enrollments/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -277,7 +277,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/enrollments/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -292,14 +292,14 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/enrollments/video/byUrl" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/enrollments/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
 	}
 
 	public String deleteAllEnrollments(String userId) {
-		return exec(new HttpDelete(BASE_URL + "/enrollments/" + enc(userId) + "/all" + notificationUrl));
+		return exec(new HttpDelete(baseUrl + "/enrollments/" + enc(userId) + "/all" + notificationUrl));
 	}
 
 	public String voiceVerification(String userId, String contentLanguage, String phrase, String recordingPath) {
@@ -315,7 +315,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/verification/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -330,7 +330,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/voice/byUrl" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/verification/voice/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -347,7 +347,7 @@ public class VoiceIt3 {
 		    .addTextBody("userId", userId)
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/verification/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -360,7 +360,7 @@ public class VoiceIt3 {
 		    .addTextBody("userId", userId)
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/face/byUrl" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/verification/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -379,7 +379,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/verification/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -394,7 +394,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/verification/video/byUrl" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/verification/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -413,7 +413,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("recording", recording, ContentType.create("application/octet-stream"), "recording")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/identification/voice" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -428,7 +428,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/voice/byUrl" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/identification/voice/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -445,7 +445,7 @@ public class VoiceIt3 {
 				.addTextBody("groupId", groupId)
 				.addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 				.build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/identification/face" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -458,7 +458,7 @@ public class VoiceIt3 {
 				.addTextBody("groupId", groupId)
 				.addTextBody("fileUrl", fileUrl)
 				.build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/face/byUrl" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/identification/face/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -477,7 +477,7 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addBinaryBody("video", video, ContentType.create("application/octet-stream"), "video")
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/identification/video" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -492,18 +492,18 @@ public class VoiceIt3 {
 		    .addTextBody("phrase", phrase, ContentType.create("text/plain", Charset.forName("UTF-8")))
 		    .addTextBody("fileUrl", fileUrl)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/identification/video/byUrl" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/identification/video/byUrl" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
 	}
 
 	public String createUserToken(String userId, int secondsToTimeout) {
-		return exec(new HttpPost(BASE_URL + "/users/" + enc(userId) + "/token?timeOut=" + Integer.toString(secondsToTimeout)));
+		return exec(new HttpPost(baseUrl + "/users/" + enc(userId) + "/token?timeOut=" + Integer.toString(secondsToTimeout)));
 	}
 
 	public String expireUserTokens(String userId) {
-		return exec(new HttpPost(BASE_URL + "/users/" + enc(userId) + "/expireTokens" + notificationUrl));
+		return exec(new HttpPost(baseUrl + "/users/" + enc(userId) + "/expireTokens" + notificationUrl));
 	}
 
 	public String createManagedSubAccount(String firstName, String lastName, String email, String password, String contentLanguage) {
@@ -516,7 +516,7 @@ public class VoiceIt3 {
 		    .addTextBody("password", password)
 		    .addTextBody("contentLanguage", contentLanguage)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/subaccount/managed" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/subaccount/managed" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -532,7 +532,7 @@ public class VoiceIt3 {
 		    .addTextBody("password", password)
 		    .addTextBody("contentLanguage", contentLanguage)
 		    .build();
-		HttpPost httpPost = new HttpPost(BASE_URL + "/subaccount/unmanaged" + notificationUrl);
+		HttpPost httpPost = new HttpPost(baseUrl + "/subaccount/unmanaged" + notificationUrl);
 		httpPost.setEntity(entity);
 
 		return exec(httpPost);
@@ -540,11 +540,11 @@ public class VoiceIt3 {
 
 
 	public String regenerateSubAccountAPIToken(String subAccountAPIKey) {
-		return exec(new HttpPost(BASE_URL + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl));
+		return exec(new HttpPost(baseUrl + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl));
 	}
 
 	public String deleteSubAccount(String subAccountAPIKey) {
-		return exec(new HttpDelete(BASE_URL + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl));
+		return exec(new HttpDelete(baseUrl + "/subaccount/" + enc(subAccountAPIKey) + notificationUrl));
 	}
 
 }
