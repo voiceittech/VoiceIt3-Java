@@ -73,7 +73,9 @@ public class VoiceIt3 {
 	// or '?' cannot change the endpoint or inject query parameters.
 	private static String enc(String s) {
 		try {
-			return URLEncoder.encode(s, "UTF-8");
+			// URLEncoder produces application/x-www-form-urlencoded (spaces → +).
+			// Path segments need percent-encoding (spaces → %20), so fix up after.
+			return URLEncoder.encode(s, "UTF-8").replace("+", "%20");
 		} catch (java.io.UnsupportedEncodingException e) {
 			throw new RuntimeException("UTF-8 not supported", e);
 		}
