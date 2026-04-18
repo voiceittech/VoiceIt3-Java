@@ -27,27 +27,27 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicHeader;
 
-public class VoiceIt3 {
+public class voiceit3 {
 
 	private String baseUrl = "https://api.voiceit.io";
 	private String notificationUrl = "";
 	private HttpClient httpClient;
 	public static final String VERSION = "3.1.0";
 
-	public VoiceIt3(String apiKey, String apiToken){
+	public voiceit3(String apiKey, String apiToken){
 			HttpClientBuilder clientBuilder = HttpClients.custom();
 			setup(clientBuilder, apiKey, apiToken);
 			httpClient = clientBuilder.build();
 	}
 
 	/**
-	 * Construct a VoiceIt3 client that talks to a custom base URL (for example,
+	 * Construct a voiceit3 client that talks to a custom base URL (for example,
 	 * an on-premise deployment). TLS certificate and hostname verification use
 	 * the JVM's default trust store and PKIX validation — unchanged from the
 	 * standard constructor. To trust a private CA, add it to the JVM trust
 	 * store (cacerts) or use the (SSLContext) overload below.
 	 */
-	public VoiceIt3(String apiKey, String apiToken, String customBaseURL) {
+	public voiceit3(String apiKey, String apiToken, String customBaseURL) {
 		baseUrl = customBaseURL;
 		HttpClientBuilder clientBuilder = HttpClients.custom();
 		setup(clientBuilder, apiKey, apiToken);
@@ -55,11 +55,11 @@ public class VoiceIt3 {
 	}
 
 	/**
-	 * Construct a VoiceIt3 client with a caller-supplied SSLContext. Use this
+	 * Construct a voiceit3 client with a caller-supplied SSLContext. Use this
 	 * overload when you need to trust a private CA or enforce certificate
 	 * pinning. Never construct an SSLContext that accepts all certificates.
 	 */
-	public VoiceIt3(String apiKey, String apiToken, String customBaseURL, SSLContext sslContext) {
+	public voiceit3(String apiKey, String apiToken, String customBaseURL, SSLContext sslContext) {
 		baseUrl = customBaseURL;
 		HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
 			.setTlsSocketStrategy(new DefaultClientTlsStrategy(sslContext))

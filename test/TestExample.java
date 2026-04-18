@@ -1,4 +1,4 @@
-import voiceit.java.VoiceIt3;
+import voiceit.java.voiceit3;
 import org.json.JSONObject;
 
 public class TestExample {
@@ -7,7 +7,7 @@ public class TestExample {
         String at = System.getenv("VOICEIT_API_TOKEN");
         if (ak == null || at == null) { System.out.println("Set env vars"); System.exit(1); }
 
-        VoiceIt3 vi = new VoiceIt3(ak, at);
+        voiceit3 vi = new voiceit3(ak, at);
         String phrase = "Never forget tomorrow is a new day";
         String td = "../test-data";
         int errors = 0;
